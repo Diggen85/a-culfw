@@ -4,10 +4,10 @@
 #include <stdint.h>
 
 /* if you have an Arduino with only 8MHz disable the next line */
-#define HAS_16MHZ_CLOCK
+//#define HAS_16MHZ_CLOCK
 
-/* Enables Software Serial Stacking */
-#define HAS_SSerial
+/* Enables Software Serial Stacking and sets Baudrate to 9600*/
+#define HAS_SSERIAL
 
 
 
@@ -71,7 +71,7 @@
 extern const uint8_t mark433_pin;
 
 #define HAS_UART
-#if defined HAS_SSerial
+#if defined HAS_SSERIAL
 	#define UART_BAUD_RATE          9600
 #else
 	#define UART_BAUD_RATE          38400
@@ -90,7 +90,7 @@ extern const uint8_t mark433_pin;
 #define HAS_CC1101_PLL_LOCK_CHECK_MSG
 #define HAS_CC1101_PLL_LOCK_CHECK_MSG_SW
 
-#if defined HAS_SSerial
+#if defined HAS_SSERIAL
 	/*SSerial RX/TX Port/Pin */
 	#define SSERIAL_DDR		DDRC
 	#define SSERIAL_PORT	PORTC
@@ -106,7 +106,7 @@ extern const uint8_t mark433_pin;
 	/* SSerial Timer Settings */
 	#if defined HAS_16MHZ_CLOCK
 		#define SSERIAL_TIMER_DISABLE() (TCCR2B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20)))
-		#define SSERIAL_TIMER_ENABLE()	(TCCR2B |=  (1<<CS21) | (1<<CS20))) ) //Prescale 32 2us
+		#define SSERIAL_TIMER_ENABLE()	(TCCR2B |=  (1<<CS21) | (1<<CS20))) ) //Prescale 32 - 2us
 		/* Timerlänge Bits (16000000 / 32 * 1 / 38400 = 13,02) (HZ/Prescaler*1/Baud)
 		52=9600baud / 38400 nicht probiert */
 		#define SSERIAL_TIMER_1BIT()			(OCR2A = 52) 
@@ -114,7 +114,7 @@ extern const uint8_t mark433_pin;
 		#define SSERIAL_TIMER_RESET()			(TCNT2 = 0)
 	#else
 		#define SSERIAL_TIMER_DISABLE() (TCCR2B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20)))
-		#define SSERIAL_TIMER_ENABLE()	(TCCR2B |=  (1<<CS21) ) //Prescale 8 1us
+		#define SSERIAL_TIMER_ENABLE()	(TCCR2B |=  (1<<CS21) ) //Prescale 8 - 1us
 		/* Timerlänge Bits (8000000 / 8 * 1 / 38400 = 26,04) (HZ/Prescaler*1/Baud)
 		104=9600baud / 38400 zu schnell... */
 		#define SSERIAL_TIMER_1BIT()			(OCR2A = 104) 
@@ -145,8 +145,8 @@ extern const uint8_t mark433_pin;
 #  define HAS_IT
 #  define HAS_TCM97001
 #  define HAS_MANCHESTER
-
-#ifndef HAS_SSerial
+/* Won't fit with SSerial Stacking */
+#ifndef HAS_SSERIAL
 #  define HAS_REVOLT
 #  define HAS_HOMEEASY
 #  define HAS_BELFOX

@@ -63,7 +63,9 @@
 #ifdef HAS_RFNATIVE
 #include "rf_native.h"
 #endif
-
+#ifdef HAS_SSERIAL
+#include "SSerial.h"
+#endif
 
 
 #ifdef HAS_CC1100_433
@@ -133,7 +135,9 @@ const PROGMEM t_fntab fntab[] = {
   { 'u', rf_router_func },
 #endif
   { 'x', ccsetpa },
-
+#ifdef HAS_SSERIAL
+  { '*', SSerial_StackingFunc },
+#endif
   { 0, 0 },
 };
 
@@ -176,6 +180,10 @@ main(void)
 #else
   uart_init( UART_BAUD_SELECT_DOUBLE_SPEED(UART_BAUD_RATE,F_CPU) );
 #endif
+#ifdef HAS_SSERIAL
+  SSerial_init();
+ #endif
+
   fht_init();
   tx_init();
   input_handle_func = analyze_ttydata;
@@ -194,6 +202,9 @@ main(void)
 
   for(;;) {
     uart_task();
+#ifdef HAS_SSERIAL
+	SSerial_StackingTask();
+#endif
     RfAnalyze_Task();
     Minute_Task();
 #ifdef HAS_FASTRF

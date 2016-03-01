@@ -49,7 +49,7 @@ SRC = nanoCUL.c                                            \
 		../../clib/mbus/3outof6.c                            \
 		../../clib/mbus/mbus_packet.c                        \
 		../../clib/mbus/crc.c                                \
-		../../clib/SSerial.c                                  \
+		../../clib/mbus/SSerial.c                                \
 
 
 OPT = s
@@ -176,7 +176,7 @@ OBJ = $(SRC:%.c=$(OBJDIR)/%.o) $(CPPSRC:%.cpp=$(OBJDIR)/%.o) $(ASRC:%.S=$(OBJDIR
 LST = $(SRC:%.c=$(OBJDIR)/%.lst) $(CPPSRC:%.cpp=$(OBJDIR)/%.lst) $(ASRC:%.S=$(OBJDIR)/%.lst) 
 
 
-GENDEPFLAGS = -MMD -MP -MF dep/$(@F).d
+GENDEPFLAGS = -MMD -MP -MF .dep/$(@F).d
 
 
 ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) $(GENDEPFLAGS)
@@ -186,8 +186,8 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
 all: 
-	make TARGET=nanoCUL868 mostly_clean build
-	make TARGET=nanoCUL433 mostly_clean build
+	make TARGET=nanoCUL868 mostly_clean sizebefore build sizeafter
+	make TARGET=nanoCUL433 mostly_clean sizebefore build sizeafter
 
 build: elf hex eep lss sym
 
@@ -403,13 +403,13 @@ clean_list:
 	@$(REMOVE) $(SRC:.c=.s)
 	@$(REMOVE) $(SRC:.c=.d)
 	@$(REMOVE) $(SRC:.c=.i)
-	@$(REMOVEDIR) dep
+	@$(REMOVEDIR) .dep
 
 
 $(shell mkdir $(OBJDIR) 2>/dev/null)
 
 
--include $(shell mkdir dep 2>/dev/null) $(wildcard dep/*)
+-include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
 
 
 .PHONY : all begin  \
