@@ -6,6 +6,11 @@
 /* if you have an Arduino with only 8MHz disable the next line */
 #define HAS_16MHZ_CLOCK
 
+/* Enables Software Serial Stacking */
+#define HAS_SSerial
+
+
+
 /* if you are using a CC1101 module for 868MHz disable the next line */
 #if defined (nanoCUL433)
 #define HAS_CC1100_433
@@ -55,11 +60,6 @@
 #define LED_PORT                PORTB
 #define LED_PIN                 1
 
-//#define LED_ON_DDR              DDRB
-//#define LED_ON_PORT             PORTB
-//#define LED_ON_PIN              1
-
-
 #define BOARD_ID_STR            "nanoCUL868"
 #define BOARD_ID_STR433         "nanoCUL433"
 
@@ -71,14 +71,13 @@
 extern const uint8_t mark433_pin;
 
 #define HAS_UART
-#define UART_BAUD_RATE          38400
-
-/* ATMega328P has only one UART, no need to define the UART to use */
-//#define USART_RX_vect           USART0_RX_vect
-//#define USART_UDRE_vect         USART0_UDRE_vect
+#if defined HAS_SSerial
+	#define UART_BAUD_RATE          9600
+#else
+	#define UART_BAUD_RATE          38400
+#endif
 
 #define TTY_BUFSIZE             128
-
 
 #define RCV_BUCKETS            2      //                 RAM: 25b * bucket
 #define FULL_CC1100_PA                // PROGMEM:  108b
@@ -86,20 +85,53 @@ extern const uint8_t mark433_pin;
 #define HAS_FASTRF                    // PROGMEM:  468b  RAM:  1b
 #define HAS_ASKSIN
 
-/* Intertechno Senden einschalten */
-#define HAS_INTERTECHNO
-
-
 
 #define HAS_CC1101_RX_PLL_LOCK_CHECK_TASK_WAIT
 #define HAS_CC1101_PLL_LOCK_CHECK_MSG
 #define HAS_CC1101_PLL_LOCK_CHECK_MSG_SW
+
+#if defined HAS_SSerial
+	/*SSerial RX/TX Port/Pin */
+	#define SSERIAL_DDR		DDRC
+	#define SSERIAL_PORT	PORTC
+	#define SSERIAL_PIN		PINC
+	#define SSERIAL_RX_PIN	PINC0
+	#define SSERIAL_TX_PIN  PINC1
+	/* SSerial RX Interrupt */
+	#define SSERIAL_PCIE    PCIE1
+	#define SSERIAL_PCMSK	PCMSK1
+	#define SSERIAL_PCINT	PCINT8
+	#define SSERIAL_PCINT_VECT PCINT1_vect
+	#define SSERIAL_PCINT_IF PCIF1
+	/* SSerial Timer Settings */
+	#if defined HAS_16MHZ_CLOCK
+		#define SSERIAL_TIMER_DISABLE() (TCCR2B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20)))
+		#define SSERIAL_TIMER_ENABLE()	(TCCR2B |=  (1<<CS21) | (1<<CS20))) ) //Prescale 32 2us
+		/* Timerlänge Bits (16000000 / 32 * 1 / 38400 = 13,02) (HZ/Prescaler*1/Baud)
+		52=9600baud / 38400 nicht probiert */
+		#define SSERIAL_TIMER_1BIT()			(OCR2A = 52) 
+		#define SSERIAL_TIMER_15BIT()			(OCR2A = 78) 
+		#define SSERIAL_TIMER_RESET()			(TCNT2 = 0)
+	#else
+		#define SSERIAL_TIMER_DISABLE() (TCCR2B &= ~((1<<CS22) | (1<<CS21) | (1<<CS20)))
+		#define SSERIAL_TIMER_ENABLE()	(TCCR2B |=  (1<<CS21) ) //Prescale 8 1us
+		/* Timerlänge Bits (8000000 / 8 * 1 / 38400 = 26,04) (HZ/Prescaler*1/Baud)
+		104=9600baud / 38400 zu schnell... */
+		#define SSERIAL_TIMER_1BIT()			(OCR2A = 104) 
+		#define SSERIAL_TIMER_15BIT()			(OCR2A = 156) 
+		#define SSERIAL_TIMER_RESET()			(TCNT2 = 0)
+	#endif
+#endif
+
+
 /* HAS_MBUS requires about 1kB RAM, if you want to use it you
    should consider disabling other unneeded features
    to avoid stack overflows
 */
 //#define HAS_MBUS
 
+/* Intertechno Senden einschalten */
+#  define HAS_INTERTECHNO
 #  define HAS_TX3
 #  define HAS_UNIROLL
 
@@ -111,14 +143,18 @@ extern const uint8_t mark433_pin;
 #if defined (nanoCUL433)
 /* Intertechno Empfang einschalten */
 #  define HAS_IT
-#  define HAS_REVOLT
 #  define HAS_TCM97001
+#  define HAS_MANCHESTER
+
+#ifndef HAS_SSerial
+#  define HAS_REVOLT
 #  define HAS_HOMEEASY
 #  define HAS_BELFOX
-#  define HAS_MANCHESTER
+#endif
 #endif
 
 #if defined (nanoCUL868)
+
 #  define HAS_ASKSIN_FUP
 #  define HAS_MORITZ
 #  define HAS_RWE

@@ -11,7 +11,8 @@
 #include "SSerial.h"
 
 #include <avr/interrupt.h>
-
+#include <avr/io.h>
+#include "board.h"
 #include "stringfunc.h"
 #include "display.h"
 #include "clock.h"
