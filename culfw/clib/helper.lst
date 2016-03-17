@@ -1,0 +1,65 @@
+   1               		.file	"helper.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.comm	packetCheckValues,1,1
+   8               		.text
+   9               	.global	mirror
+  11               	mirror:
+  12 0000 A1E0      		ldi r26,lo8(1)
+  13 0002 B0E0      		ldi r27,0
+  14 0004 E0E0      		ldi r30,lo8(gs(1f))
+  15 0006 F0E0      		ldi r31,hi8(gs(1f))
+  16 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  17               	1:
+  18               	/* prologue: function */
+  19               	/* frame size = 1 */
+  20               	/* stack size = 3 */
+  21               	.L__stack_usage = 3
+  22 000c 8983      		std Y+1,r24
+  23 000e 8981      		ldd r24,Y+1
+  24 0010 8295      		swap r24
+  25 0012 8983      		std Y+1,r24
+  26 0014 8981      		ldd r24,Y+1
+  27 0016 8695      		lsr r24
+  28 0018 8695      		lsr r24
+  29 001a 982F      		mov r25,r24
+  30 001c 9373      		andi r25,lo8(51)
+  31 001e 8981      		ldd r24,Y+1
+  32 0020 880F      		lsl r24
+  33 0022 880F      		lsl r24
+  34 0024 8C7C      		andi r24,lo8(-52)
+  35 0026 892B      		or r24,r25
+  36 0028 8983      		std Y+1,r24
+  37 002a 8981      		ldd r24,Y+1
+  38 002c 8695      		lsr r24
+  39 002e 982F      		mov r25,r24
+  40 0030 9575      		andi r25,lo8(85)
+  41 0032 8981      		ldd r24,Y+1
+  42 0034 880F      		lsl r24
+  43 0036 8A7A      		andi r24,lo8(-86)
+  44 0038 892B      		or r24,r25
+  45 003a 8983      		std Y+1,r24
+  46 003c 8981      		ldd r24,Y+1
+  47               	/* epilogue start */
+  48 003e 2196      		adiw r28,1
+  49 0040 E2E0      		ldi r30, lo8(2)
+  50 0042 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+  52               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+  53               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:00000000 helper.c
+C:\Users\Benny\AppData\Local\Temp\ccOb0sud.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccOb0sud.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccOb0sud.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccOb0sud.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccOb0sud.s:6      *ABS*:00000001 __zero_reg__
+                            *COM*:00000001 packetCheckValues
+C:\Users\Benny\AppData\Local\Temp\ccOb0sud.s:11     .text:00000000 mirror
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+__epilogue_restores__
+__do_clear_bss

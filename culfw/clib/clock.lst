@@ -1,0 +1,257 @@
+   1               		.file	"clock.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.comm	ticks,4,1
+   8               		.comm	clock_hsec,1,1
+   9               		.text
+  10               	.global	__vector_16
+  12               	__vector_16:
+  13 0000 1F92      		push r1
+  14 0002 0F92      		push r0
+  15 0004 0090 5F00 		lds r0,95
+  16 0008 0F92      		push r0
+  17 000a 1124      		clr __zero_reg__
+  18 000c 8F93      		push r24
+  19 000e 9F93      		push r25
+  20 0010 AF93      		push r26
+  21 0012 BF93      		push r27
+  22 0014 CF93      		push r28
+  23 0016 DF93      		push r29
+  24 0018 CDB7      		in r28,__SP_L__
+  25 001a DEB7      		in r29,__SP_H__
+  26               	/* prologue: Signal */
+  27               	/* frame size = 0 */
+  28               	/* stack size = 9 */
+  29               	.L__stack_usage = 9
+  30 001c 8091 0000 		lds r24,ticks
+  31 0020 9091 0000 		lds r25,ticks+1
+  32 0024 A091 0000 		lds r26,ticks+2
+  33 0028 B091 0000 		lds r27,ticks+3
+  34 002c 0196      		adiw r24,1
+  35 002e A11D      		adc r26,__zero_reg__
+  36 0030 B11D      		adc r27,__zero_reg__
+  37 0032 8093 0000 		sts ticks,r24
+  38 0036 9093 0000 		sts ticks+1,r25
+  39 003a A093 0000 		sts ticks+2,r26
+  40 003e B093 0000 		sts ticks+3,r27
+  41 0042 8091 0000 		lds r24,clock_hsec
+  42 0046 8F5F      		subi r24,lo8(-(1))
+  43 0048 8093 0000 		sts clock_hsec,r24
+  44               	/* epilogue start */
+  45 004c DF91      		pop r29
+  46 004e CF91      		pop r28
+  47 0050 BF91      		pop r27
+  48 0052 AF91      		pop r26
+  49 0054 9F91      		pop r25
+  50 0056 8F91      		pop r24
+  51 0058 0F90      		pop r0
+  52 005a 0092 5F00 		sts 95,r0
+  53 005e 0F90      		pop r0
+  54 0060 1F90      		pop r1
+  55 0062 1895      		reti
+  57               	.global	get_timestamp
+  59               	get_timestamp:
+  60 0064 A3E0      		ldi r26,lo8(3)
+  61 0066 B0E0      		ldi r27,0
+  62 0068 E0E0      		ldi r30,lo8(gs(1f))
+  63 006a F0E0      		ldi r31,hi8(gs(1f))
+  64 006c 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  65               	1:
+  66               	/* prologue: function */
+  67               	/* frame size = 3 */
+  68               	/* stack size = 5 */
+  69               	.L__stack_usage = 5
+  70 0070 9B83      		std Y+3,r25
+  71 0072 8A83      		std Y+2,r24
+  72 0074 8FE5      		ldi r24,lo8(95)
+  73 0076 90E0      		ldi r25,0
+  74 0078 FC01      		movw r30,r24
+  75 007a 8081      		ld r24,Z
+  76 007c 8983      		std Y+1,r24
+  77               	/* #APP */
+  78               	 ;  108 "../../clib/clock.c" 1
+  79 007e F894      		cli
+  80               	 ;  0 "" 2
+  81               	/* #NOAPP */
+  82 0080 8091 0000 		lds r24,ticks
+  83 0084 9091 0000 		lds r25,ticks+1
+  84 0088 A091 0000 		lds r26,ticks+2
+  85 008c B091 0000 		lds r27,ticks+3
+  86 0090 2A81      		ldd r18,Y+2
+  87 0092 3B81      		ldd r19,Y+3
+  88 0094 F901      		movw r30,r18
+  89 0096 8083      		st Z,r24
+  90 0098 9183      		std Z+1,r25
+  91 009a A283      		std Z+2,r26
+  92 009c B383      		std Z+3,r27
+  93 009e 8FE5      		ldi r24,lo8(95)
+  94 00a0 90E0      		ldi r25,0
+  95 00a2 2981      		ldd r18,Y+1
+  96 00a4 FC01      		movw r30,r24
+  97 00a6 2083      		st Z,r18
+  98               	/* epilogue start */
+  99 00a8 2396      		adiw r28,3
+ 100 00aa E2E0      		ldi r30, lo8(2)
+ 101 00ac 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 103               	.global	gettime
+ 105               	gettime:
+ 106 00b0 A8E0      		ldi r26,lo8(8)
+ 107 00b2 B0E0      		ldi r27,0
+ 108 00b4 E0E0      		ldi r30,lo8(gs(1f))
+ 109 00b6 F0E0      		ldi r31,hi8(gs(1f))
+ 110 00b8 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+ 111               	1:
+ 112               	/* prologue: function */
+ 113               	/* frame size = 8 */
+ 114               	/* stack size = 10 */
+ 115               	.L__stack_usage = 10
+ 116 00bc 9887      		std Y+8,r25
+ 117 00be 8F83      		std Y+7,r24
+ 118 00c0 CE01      		movw r24,r28
+ 119 00c2 0396      		adiw r24,3
+ 120 00c4 0E94 0000 		call get_timestamp
+ 121 00c8 CE01      		movw r24,r28
+ 122 00ca 0396      		adiw r24,3
+ 123 00cc 9A83      		std Y+2,r25
+ 124 00ce 8983      		std Y+1,r24
+ 125 00d0 8981      		ldd r24,Y+1
+ 126 00d2 9A81      		ldd r25,Y+2
+ 127 00d4 0396      		adiw r24,3
+ 128 00d6 FC01      		movw r30,r24
+ 129 00d8 8081      		ld r24,Z
+ 130 00da 0E94 0000 		call display_hex2
+ 131 00de 8981      		ldd r24,Y+1
+ 132 00e0 9A81      		ldd r25,Y+2
+ 133 00e2 0296      		adiw r24,2
+ 134 00e4 FC01      		movw r30,r24
+ 135 00e6 8081      		ld r24,Z
+ 136 00e8 0E94 0000 		call display_hex2
+ 137 00ec 8981      		ldd r24,Y+1
+ 138 00ee 9A81      		ldd r25,Y+2
+ 139 00f0 0196      		adiw r24,1
+ 140 00f2 FC01      		movw r30,r24
+ 141 00f4 8081      		ld r24,Z
+ 142 00f6 0E94 0000 		call display_hex2
+ 143 00fa 8981      		ldd r24,Y+1
+ 144 00fc 9A81      		ldd r25,Y+2
+ 145 00fe FC01      		movw r30,r24
+ 146 0100 8081      		ld r24,Z
+ 147 0102 0E94 0000 		call display_hex2
+ 148 0106 0E94 0000 		call display_nl
+ 149               	/* epilogue start */
+ 150 010a 2896      		adiw r28,8
+ 151 010c E2E0      		ldi r30, lo8(2)
+ 152 010e 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 154               	.global	Minute_Task
+ 156               	Minute_Task:
+ 157 0112 A0E0      		ldi r26,0
+ 158 0114 B0E0      		ldi r27,0
+ 159 0116 E0E0      		ldi r30,lo8(gs(1f))
+ 160 0118 F0E0      		ldi r31,hi8(gs(1f))
+ 161 011a 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+ 162               	1:
+ 163               	/* prologue: function */
+ 164               	/* frame size = 0 */
+ 165               	/* stack size = 2 */
+ 166               	.L__stack_usage = 2
+ 167 011e 8091 0000 		lds r24,ticks
+ 168 0122 9091 0000 		lds r25,ticks+1
+ 169 0126 A091 0000 		lds r26,ticks+2
+ 170 012a B091 0000 		lds r27,ticks+3
+ 171 012e 982F      		mov r25,r24
+ 172 0130 8091 0000 		lds r24,last_tick.2186
+ 173 0134 9817      		cp r25,r24
+ 174 0136 01F4      		brne .L5
+ 175 0138 00C0      		rjmp .L4
+ 176               	.L5:
+ 177 013a 8091 0000 		lds r24,ticks
+ 178 013e 9091 0000 		lds r25,ticks+1
+ 179 0142 A091 0000 		lds r26,ticks+2
+ 180 0146 B091 0000 		lds r27,ticks+3
+ 181 014a 8093 0000 		sts last_tick.2186,r24
+ 182               	/* #APP */
+ 183               	 ;  145 "../../clib/clock.c" 1
+ 184 014e A895      		wdr
+ 185               	 ;  0 "" 2
+ 186               	/* #NOAPP */
+ 187 0150 8091 0000 		lds r24,clock_hsec
+ 188 0154 8D37      		cpi r24,lo8(125)
+ 189 0156 00F4      		brsh .L7
+ 190 0158 00C0      		rjmp .L4
+ 191               	.L7:
+ 192 015a 1092 0000 		sts clock_hsec,__zero_reg__
+ 193 015e 8091 0000 		lds r24,led_mode
+ 194 0162 882F      		mov r24,r24
+ 195 0164 90E0      		ldi r25,0
+ 196 0166 8270      		andi r24,2
+ 197 0168 9927      		clr r25
+ 198 016a 892B      		or r24,r25
+ 199 016c 01F0      		breq .L8
+ 200 016e 85E2      		ldi r24,lo8(37)
+ 201 0170 90E0      		ldi r25,0
+ 202 0172 25E2      		ldi r18,lo8(37)
+ 203 0174 30E0      		ldi r19,0
+ 204 0176 F901      		movw r30,r18
+ 205 0178 3081      		ld r19,Z
+ 206 017a 21E0      		ldi r18,lo8(1)
+ 207 017c 2327      		eor r18,r19
+ 208 017e FC01      		movw r30,r24
+ 209 0180 2083      		st Z,r18
+ 210               	.L8:
+ 211 0182 8091 0000 		lds r24,credit_10ms
+ 212 0186 9091 0000 		lds r25,credit_10ms+1
+ 213 018a 8438      		cpi r24,-124
+ 214 018c 9340      		sbci r25,3
+ 215 018e 00F4      		brsh .L9
+ 216 0190 8091 0000 		lds r24,credit_10ms
+ 217 0194 9091 0000 		lds r25,credit_10ms+1
+ 218 0198 0196      		adiw r24,1
+ 219 019a 9093 0000 		sts credit_10ms+1,r25
+ 220 019e 8093 0000 		sts credit_10ms,r24
+ 221               	.L9:
+ 222 01a2 8091 0000 		lds r24,clock_sec.2187
+ 223 01a6 8F5F      		subi r24,lo8(-(1))
+ 224 01a8 8093 0000 		sts clock_sec.2187,r24
+ 225 01ac 8091 0000 		lds r24,clock_sec.2187
+ 226 01b0 8C33      		cpi r24,lo8(60)
+ 227 01b2 01F0      		breq .L10
+ 228 01b4 00C0      		rjmp .L4
+ 229               	.L10:
+ 230 01b6 1092 0000 		sts clock_sec.2187,__zero_reg__
+ 231               	.L4:
+ 232               	/* epilogue start */
+ 233 01ba E2E0      		ldi r30, lo8(2)
+ 234 01bc 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 236               		.local	last_tick.2186
+ 237               		.comm	last_tick.2186,1,1
+ 238               		.local	clock_sec.2187
+ 239               		.comm	clock_sec.2187,1,1
+ 240               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+ 241               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:00000000 clock.c
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:6      *ABS*:00000001 __zero_reg__
+                            *COM*:00000004 ticks
+                            *COM*:00000001 clock_hsec
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:12     .text:00000000 __vector_16
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:59     .text:00000064 get_timestamp
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:105    .text:000000b0 gettime
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:156    .text:00000112 Minute_Task
+                             .bss:00000000 last_tick.2186
+C:\Users\Benny\AppData\Local\Temp\cc4gXXOS.s:237    .bss:00000001 clock_sec.2187
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+__epilogue_restores__
+display_hex2
+display_nl
+led_mode
+credit_10ms
+__do_clear_bss

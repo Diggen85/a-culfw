@@ -1,0 +1,120 @@
+   1               		.file	"spi.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.global	spi_init
+  10               	spi_init:
+  11 0000 A0E0      		ldi r26,0
+  12 0002 B0E0      		ldi r27,0
+  13 0004 E0E0      		ldi r30,lo8(gs(1f))
+  14 0006 F0E0      		ldi r31,hi8(gs(1f))
+  15 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  16               	1:
+  17               	/* prologue: function */
+  18               	/* frame size = 0 */
+  19               	/* stack size = 2 */
+  20               	.L__stack_usage = 2
+  21 000c 84E6      		ldi r24,lo8(100)
+  22 000e 90E0      		ldi r25,0
+  23 0010 24E6      		ldi r18,lo8(100)
+  24 0012 30E0      		ldi r19,0
+  25 0014 F901      		movw r30,r18
+  26 0016 2081      		ld r18,Z
+  27 0018 2B7F      		andi r18,lo8(-5)
+  28 001a FC01      		movw r30,r24
+  29 001c 2083      		st Z,r18
+  30 001e 85E2      		ldi r24,lo8(37)
+  31 0020 90E0      		ldi r25,0
+  32 0022 25E2      		ldi r18,lo8(37)
+  33 0024 30E0      		ldi r19,0
+  34 0026 F901      		movw r30,r18
+  35 0028 2081      		ld r18,Z
+  36 002a 2068      		ori r18,lo8(-128)
+  37 002c FC01      		movw r30,r24
+  38 002e 2083      		st Z,r18
+  39 0030 84E2      		ldi r24,lo8(36)
+  40 0032 90E0      		ldi r25,0
+  41 0034 24E2      		ldi r18,lo8(36)
+  42 0036 30E0      		ldi r19,0
+  43 0038 F901      		movw r30,r18
+  44 003a 2081      		ld r18,Z
+  45 003c 206B      		ori r18,lo8(-80)
+  46 003e FC01      		movw r30,r24
+  47 0040 2083      		st Z,r18
+  48 0042 84E2      		ldi r24,lo8(36)
+  49 0044 90E0      		ldi r25,0
+  50 0046 24E2      		ldi r18,lo8(36)
+  51 0048 30E0      		ldi r19,0
+  52 004a F901      		movw r30,r18
+  53 004c 2081      		ld r18,Z
+  54 004e 2F7B      		andi r18,lo8(-65)
+  55 0050 FC01      		movw r30,r24
+  56 0052 2083      		st Z,r18
+  57 0054 8CE4      		ldi r24,lo8(76)
+  58 0056 90E0      		ldi r25,0
+  59 0058 20E5      		ldi r18,lo8(80)
+  60 005a FC01      		movw r30,r24
+  61 005c 2083      		st Z,r18
+  62 005e 8DE4      		ldi r24,lo8(77)
+  63 0060 90E0      		ldi r25,0
+  64 0062 2DE4      		ldi r18,lo8(77)
+  65 0064 30E0      		ldi r19,0
+  66 0066 F901      		movw r30,r18
+  67 0068 2081      		ld r18,Z
+  68 006a 2160      		ori r18,lo8(1)
+  69 006c FC01      		movw r30,r24
+  70 006e 2083      		st Z,r18
+  71               	/* epilogue start */
+  72 0070 E2E0      		ldi r30, lo8(2)
+  73 0072 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+  75               	.global	spi_send
+  77               	spi_send:
+  78 0076 A1E0      		ldi r26,lo8(1)
+  79 0078 B0E0      		ldi r27,0
+  80 007a E0E0      		ldi r30,lo8(gs(1f))
+  81 007c F0E0      		ldi r31,hi8(gs(1f))
+  82 007e 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  83               	1:
+  84               	/* prologue: function */
+  85               	/* frame size = 1 */
+  86               	/* stack size = 3 */
+  87               	.L__stack_usage = 3
+  88 0082 8983      		std Y+1,r24
+  89 0084 8EE4      		ldi r24,lo8(78)
+  90 0086 90E0      		ldi r25,0
+  91 0088 2981      		ldd r18,Y+1
+  92 008a FC01      		movw r30,r24
+  93 008c 2083      		st Z,r18
+  94 008e 0000      		nop
+  95               	.L3:
+  96 0090 8DE4      		ldi r24,lo8(77)
+  97 0092 90E0      		ldi r25,0
+  98 0094 FC01      		movw r30,r24
+  99 0096 8081      		ld r24,Z
+ 100 0098 8823      		tst r24
+ 101 009a 04F4      		brge .L3
+ 102 009c 8EE4      		ldi r24,lo8(78)
+ 103 009e 90E0      		ldi r25,0
+ 104 00a0 FC01      		movw r30,r24
+ 105 00a2 8081      		ld r24,Z
+ 106               	/* epilogue start */
+ 107 00a4 2196      		adiw r28,1
+ 108 00a6 E2E0      		ldi r30, lo8(2)
+ 109 00a8 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 111               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+DEFINED SYMBOLS
+                            *ABS*:00000000 spi.c
+C:\Users\Benny\AppData\Local\Temp\ccQWQGZ5.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccQWQGZ5.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccQWQGZ5.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccQWQGZ5.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccQWQGZ5.s:6      *ABS*:00000001 __zero_reg__
+C:\Users\Benny\AppData\Local\Temp\ccQWQGZ5.s:10     .text:00000000 spi_init
+C:\Users\Benny\AppData\Local\Temp\ccQWQGZ5.s:77     .text:00000076 spi_send
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+__epilogue_restores__

@@ -1,0 +1,139 @@
+   1               		.file	"rf_receive_tcm97001.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.comm	packetCheckValues,1,1
+   8               		.text
+   9               	.global	analyze_tcm97001
+  11               	analyze_tcm97001:
+  12 0000 EF92      		push r14
+  13 0002 0F93      		push r16
+  14 0004 1F93      		push r17
+  15 0006 CF93      		push r28
+  16 0008 DF93      		push r29
+  17 000a CDB7      		in r28,__SP_L__
+  18 000c DEB7      		in r29,__SP_H__
+  19 000e 2897      		sbiw r28,8
+  20 0010 0FB6      		in __tmp_reg__,__SREG__
+  21 0012 F894      		cli
+  22 0014 DEBF      		out __SP_H__,r29
+  23 0016 0FBE      		out __SREG__,__tmp_reg__
+  24 0018 CDBF      		out __SP_L__,r28
+  25               	/* prologue: function */
+  26               	/* frame size = 8 */
+  27               	/* stack size = 13 */
+  28               	.L__stack_usage = 13
+  29 001a 9A83      		std Y+2,r25
+  30 001c 8983      		std Y+1,r24
+  31 001e 7C83      		std Y+4,r23
+  32 0020 6B83      		std Y+3,r22
+  33 0022 5E83      		std Y+6,r21
+  34 0024 4D83      		std Y+5,r20
+  35 0026 3887      		std Y+8,r19
+  36 0028 2F83      		std Y+7,r18
+  37 002a 8091 0000 		lds r24,frequencyMode
+  38 002e 8130      		cpi r24,lo8(1)
+  39 0030 01F0      		breq .+2
+  40 0032 00C0      		rjmp .L1
+  41 0034 8B81      		ldd r24,Y+3
+  42 0036 9C81      		ldd r25,Y+4
+  43 0038 FC01      		movw r30,r24
+  44 003a 8081      		ld r24,Z
+  45 003c 8823      		tst r24
+  46 003e 01F0      		breq .+2
+  47 0040 00C0      		rjmp .L1
+  48 0042 8981      		ldd r24,Y+1
+  49 0044 9A81      		ldd r25,Y+2
+  50 0046 FC01      		movw r30,r24
+  51 0048 86A9      		ldd r24,Z+54
+  52 004a 8831      		cpi r24,lo8(24)
+  53 004c 01F0      		breq .L3
+  54 004e 8981      		ldd r24,Y+1
+  55 0050 9A81      		ldd r25,Y+2
+  56 0052 FC01      		movw r30,r24
+  57 0054 86A9      		ldd r24,Z+54
+  58 0056 8C31      		cpi r24,lo8(28)
+  59 0058 01F0      		breq .L3
+  60 005a 8981      		ldd r24,Y+1
+  61 005c 9A81      		ldd r25,Y+2
+  62 005e FC01      		movw r30,r24
+  63 0060 86A9      		ldd r24,Z+54
+  64 0062 8432      		cpi r24,lo8(36)
+  65 0064 01F0      		breq .L3
+  66 0066 8981      		ldd r24,Y+1
+  67 0068 9A81      		ldd r25,Y+2
+  68 006a FC01      		movw r30,r24
+  69 006c 86A9      		ldd r24,Z+54
+  70 006e 8532      		cpi r24,lo8(37)
+  71 0070 01F0      		breq .L3
+  72 0072 8981      		ldd r24,Y+1
+  73 0074 9A81      		ldd r25,Y+2
+  74 0076 FC01      		movw r30,r24
+  75 0078 86A9      		ldd r24,Z+54
+  76 007a 8A32      		cpi r24,lo8(42)
+  77 007c 01F4      		brne .L1
+  78               	.L3:
+  79 007e 8981      		ldd r24,Y+1
+  80 0080 9A81      		ldd r25,Y+2
+  81 0082 AC01      		movw r20,r24
+  82 0084 4C5F      		subi r20,-4
+  83 0086 5F4F      		sbci r21,-1
+  84 0088 8981      		ldd r24,Y+1
+  85 008a 9A81      		ldd r25,Y+2
+  86 008c FC01      		movw r30,r24
+  87 008e 6381      		ldd r22,Z+3
+  88 0090 8981      		ldd r24,Y+1
+  89 0092 9A81      		ldd r25,Y+2
+  90 0094 FC01      		movw r30,r24
+  91 0096 7181      		ldd r23,Z+1
+  92 0098 2F81      		ldd r18,Y+7
+  93 009a 3885      		ldd r19,Y+8
+  94 009c 8D81      		ldd r24,Y+5
+  95 009e 9E81      		ldd r25,Y+6
+  96 00a0 E12C      		mov r14,__zero_reg__
+  97 00a2 8901      		movw r16,r18
+  98 00a4 9C01      		movw r18,r24
+  99 00a6 872F      		mov r24,r23
+ 100 00a8 0E94 0000 		call copyData
+ 101 00ac 8981      		ldd r24,Y+1
+ 102 00ae 9A81      		ldd r25,Y+2
+ 103 00b0 28E0      		ldi r18,lo8(8)
+ 104 00b2 FC01      		movw r30,r24
+ 105 00b4 2083      		st Z,r18
+ 106 00b6 8B81      		ldd r24,Y+3
+ 107 00b8 9C81      		ldd r25,Y+4
+ 108 00ba 23E7      		ldi r18,lo8(115)
+ 109 00bc FC01      		movw r30,r24
+ 110 00be 2083      		st Z,r18
+ 111               	.L1:
+ 112               	/* epilogue start */
+ 113 00c0 2896      		adiw r28,8
+ 114 00c2 0FB6      		in __tmp_reg__,__SREG__
+ 115 00c4 F894      		cli
+ 116 00c6 DEBF      		out __SP_H__,r29
+ 117 00c8 0FBE      		out __SREG__,__tmp_reg__
+ 118 00ca CDBF      		out __SP_L__,r28
+ 119 00cc DF91      		pop r29
+ 120 00ce CF91      		pop r28
+ 121 00d0 1F91      		pop r17
+ 122 00d2 0F91      		pop r16
+ 123 00d4 EF90      		pop r14
+ 124 00d6 0895      		ret
+ 126               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+ 127               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:00000000 rf_receive_tcm97001.c
+C:\Users\Benny\AppData\Local\Temp\cczYai1N.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\cczYai1N.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\cczYai1N.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\cczYai1N.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\cczYai1N.s:6      *ABS*:00000001 __zero_reg__
+                            *COM*:00000001 packetCheckValues
+C:\Users\Benny\AppData\Local\Temp\cczYai1N.s:11     .text:00000000 analyze_tcm97001
+
+UNDEFINED SYMBOLS
+frequencyMode
+copyData
+__do_clear_bss

@@ -1,0 +1,264 @@
+   1               		.file	"ttydata.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.comm	input_handle_func,2,1
+   8               		.comm	output_flush_func,2,1
+   9               		.comm	TTY_Tx_Buffer,131,1
+  10               		.comm	TTY_Rx_Buffer,131,1
+  11               		.local	cmdbuf
+  12               		.comm	cmdbuf,129,1
+  13               		.text
+  14               	.global	callfn
+  16               	callfn:
+  17 0000 ADE0      		ldi r26,lo8(13)
+  18 0002 B0E0      		ldi r27,0
+  19 0004 E0E0      		ldi r30,lo8(gs(1f))
+  20 0006 F0E0      		ldi r31,hi8(gs(1f))
+  21 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  22               	1:
+  23               	/* prologue: function */
+  24               	/* frame size = 13 */
+  25               	/* stack size = 15 */
+  26               	.L__stack_usage = 15
+  27 000c 9D87      		std Y+13,r25
+  28 000e 8C87      		std Y+12,r24
+  29 0010 1982      		std Y+1,__zero_reg__
+  30               	.L7:
+  31 0012 8981      		ldd r24,Y+1
+  32 0014 282F      		mov r18,r24
+  33 0016 30E0      		ldi r19,0
+  34 0018 C901      		movw r24,r18
+  35 001a 880F      		lsl r24
+  36 001c 991F      		rol r25
+  37 001e 820F      		add r24,r18
+  38 0020 931F      		adc r25,r19
+  39 0022 8050      		subi r24,lo8(-(fntab))
+  40 0024 9040      		sbci r25,hi8(-(fntab))
+  41 0026 9B83      		std Y+3,r25
+  42 0028 8A83      		std Y+2,r24
+  43 002a 8A81      		ldd r24,Y+2
+  44 002c 9B81      		ldd r25,Y+3
+  45 002e FC01      		movw r30,r24
+  46               	/* #APP */
+  47               	 ;  17 "../../clib/ttydata.c" 1
+  48 0030 8491      		lpm r24, Z
+  49               		
+  50               	 ;  0 "" 2
+  51               	/* #NOAPP */
+  52 0032 8C83      		std Y+4,r24
+  53 0034 8C81      		ldd r24,Y+4
+  54 0036 8D83      		std Y+5,r24
+  55 0038 8981      		ldd r24,Y+1
+  56 003a 282F      		mov r18,r24
+  57 003c 30E0      		ldi r19,0
+  58 003e C901      		movw r24,r18
+  59 0040 880F      		lsl r24
+  60 0042 991F      		rol r25
+  61 0044 820F      		add r24,r18
+  62 0046 931F      		adc r25,r19
+  63 0048 0196      		adiw r24,1
+  64 004a 8050      		subi r24,lo8(-(fntab))
+  65 004c 9040      		sbci r25,hi8(-(fntab))
+  66 004e 9F83      		std Y+7,r25
+  67 0050 8E83      		std Y+6,r24
+  68 0052 8E81      		ldd r24,Y+6
+  69 0054 9F81      		ldd r25,Y+7
+  70 0056 FC01      		movw r30,r24
+  71               	/* #APP */
+  72               	 ;  18 "../../clib/ttydata.c" 1
+  73 0058 2591      		lpm r18, Z+
+  74 005a 3491      		lpm r19, Z
+  75               		
+  76               	 ;  0 "" 2
+  77               	/* #NOAPP */
+  78 005c CF01      		movw r24,r30
+  79 005e 3987      		std Y+9,r19
+  80 0060 2887      		std Y+8,r18
+  81 0062 9F83      		std Y+7,r25
+  82 0064 8E83      		std Y+6,r24
+  83 0066 8885      		ldd r24,Y+8
+  84 0068 9985      		ldd r25,Y+9
+  85 006a 9B87      		std Y+11,r25
+  86 006c 8A87      		std Y+10,r24
+  87 006e 8D81      		ldd r24,Y+5
+  88 0070 8823      		tst r24
+  89 0072 01F4      		brne .L2
+  90 0074 0000      		nop
+  91 0076 80E0      		ldi r24,0
+  92 0078 00C0      		rjmp .L6
+  93               	.L2:
+  94 007a 8C85      		ldd r24,Y+12
+  95 007c 9D85      		ldd r25,Y+13
+  96 007e 892B      		or r24,r25
+  97 0080 01F4      		brne .L4
+  98 0082 80E2      		ldi r24,lo8(32)
+  99 0084 0E94 0000 		call display_char
+ 100 0088 8D81      		ldd r24,Y+5
+ 101 008a 0E94 0000 		call display_char
+ 102 008e 00C0      		rjmp .L5
+ 103               	.L4:
+ 104 0090 8C85      		ldd r24,Y+12
+ 105 0092 9D85      		ldd r25,Y+13
+ 106 0094 FC01      		movw r30,r24
+ 107 0096 8081      		ld r24,Z
+ 108 0098 282F      		mov r18,r24
+ 109 009a 880F      		lsl r24
+ 110 009c 330B      		sbc r19,r19
+ 111 009e 8D81      		ldd r24,Y+5
+ 112 00a0 882F      		mov r24,r24
+ 113 00a2 90E0      		ldi r25,0
+ 114 00a4 2817      		cp r18,r24
+ 115 00a6 3907      		cpc r19,r25
+ 116 00a8 01F4      		brne .L5
+ 117 00aa 8C85      		ldd r24,Y+12
+ 118 00ac 9D85      		ldd r25,Y+13
+ 119 00ae 2A85      		ldd r18,Y+10
+ 120 00b0 3B85      		ldd r19,Y+11
+ 121 00b2 F901      		movw r30,r18
+ 122 00b4 0995      		icall
+ 123 00b6 81E0      		ldi r24,lo8(1)
+ 124 00b8 00C0      		rjmp .L6
+ 125               	.L5:
+ 126 00ba 8981      		ldd r24,Y+1
+ 127 00bc 8F5F      		subi r24,lo8(-(1))
+ 128 00be 8983      		std Y+1,r24
+ 129 00c0 00C0      		rjmp .L7
+ 130               	.L6:
+ 131               	/* epilogue start */
+ 132 00c2 2D96      		adiw r28,13
+ 133 00c4 E2E0      		ldi r30, lo8(2)
+ 134 00c6 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 136               	.global	analyze_ttydata
+ 138               	analyze_ttydata:
+ 139 00ca A3E0      		ldi r26,lo8(3)
+ 140 00cc B0E0      		ldi r27,0
+ 141 00ce E0E0      		ldi r30,lo8(gs(1f))
+ 142 00d0 F0E0      		ldi r31,hi8(gs(1f))
+ 143 00d2 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+ 144               	1:
+ 145               	/* prologue: function */
+ 146               	/* frame size = 3 */
+ 147               	/* stack size = 5 */
+ 148               	.L__stack_usage = 5
+ 149 00d6 8B83      		std Y+3,r24
+ 150 00d8 8091 0000 		lds r24,display_channel
+ 151 00dc 8983      		std Y+1,r24
+ 152 00de 8B81      		ldd r24,Y+3
+ 153 00e0 8093 0000 		sts display_channel,r24
+ 154 00e4 00C0      		rjmp .L9
+ 155               	.L14:
+ 156 00e6 80E0      		ldi r24,lo8(TTY_Rx_Buffer)
+ 157 00e8 90E0      		ldi r25,hi8(TTY_Rx_Buffer)
+ 158 00ea 0E94 0000 		call rb_get
+ 159 00ee 8A83      		std Y+2,r24
+ 160 00f0 8A81      		ldd r24,Y+2
+ 161 00f2 8A30      		cpi r24,lo8(10)
+ 162 00f4 01F0      		breq .L10
+ 163 00f6 8A81      		ldd r24,Y+2
+ 164 00f8 8D30      		cpi r24,lo8(13)
+ 165 00fa 01F4      		brne .L11
+ 166               	.L10:
+ 167 00fc 8091 0000 		lds r24,cmdlen.1729
+ 168 0100 8823      		tst r24
+ 169 0102 01F4      		brne .L12
+ 170 0104 00C0      		rjmp .L9
+ 171               	.L12:
+ 172 0106 8091 0000 		lds r24,cmdlen.1729
+ 173 010a 882F      		mov r24,r24
+ 174 010c 90E0      		ldi r25,0
+ 175 010e 8050      		subi r24,lo8(-(cmdbuf))
+ 176 0110 9040      		sbci r25,hi8(-(cmdbuf))
+ 177 0112 FC01      		movw r30,r24
+ 178 0114 1082      		st Z,__zero_reg__
+ 179 0116 80E0      		ldi r24,lo8(cmdbuf)
+ 180 0118 90E0      		ldi r25,hi8(cmdbuf)
+ 181 011a 0E94 0000 		call callfn
+ 182 011e 8823      		tst r24
+ 183 0120 01F4      		brne .L13
+ 184 0122 80E0      		ldi r24,lo8(__c.1733)
+ 185 0124 90E0      		ldi r25,hi8(__c.1733)
+ 186 0126 0E94 0000 		call display_string_P
+ 187 012a 80E0      		ldi r24,lo8(cmdbuf)
+ 188 012c 90E0      		ldi r25,hi8(cmdbuf)
+ 189 012e 0E94 0000 		call display_string
+ 190 0132 80E0      		ldi r24,lo8(__c.1735)
+ 191 0134 90E0      		ldi r25,hi8(__c.1735)
+ 192 0136 0E94 0000 		call display_string_P
+ 193 013a 80E0      		ldi r24,0
+ 194 013c 90E0      		ldi r25,0
+ 195 013e 0E94 0000 		call callfn
+ 196 0142 0E94 0000 		call display_nl
+ 197               	.L13:
+ 198 0146 1092 0000 		sts cmdlen.1729,__zero_reg__
+ 199 014a 00C0      		rjmp .L9
+ 200               	.L11:
+ 201 014c 8091 0000 		lds r24,cmdlen.1729
+ 202 0150 8823      		tst r24
+ 203 0152 04F0      		brlt .L9
+ 204 0154 8091 0000 		lds r24,cmdlen.1729
+ 205 0158 91E0      		ldi r25,lo8(1)
+ 206 015a 980F      		add r25,r24
+ 207 015c 9093 0000 		sts cmdlen.1729,r25
+ 208 0160 882F      		mov r24,r24
+ 209 0162 90E0      		ldi r25,0
+ 210 0164 2A81      		ldd r18,Y+2
+ 211 0166 8050      		subi r24,lo8(-(cmdbuf))
+ 212 0168 9040      		sbci r25,hi8(-(cmdbuf))
+ 213 016a FC01      		movw r30,r24
+ 214 016c 2083      		st Z,r18
+ 215               	.L9:
+ 216 016e 8091 0000 		lds r24,TTY_Rx_Buffer+2
+ 217 0172 8823      		tst r24
+ 218 0174 01F0      		breq .+2
+ 219 0176 00C0      		rjmp .L14
+ 220 0178 8981      		ldd r24,Y+1
+ 221 017a 8093 0000 		sts display_channel,r24
+ 222               	/* epilogue start */
+ 223 017e 2396      		adiw r28,3
+ 224 0180 E2E0      		ldi r30, lo8(2)
+ 225 0182 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 227               		.local	cmdlen.1729
+ 228               		.comm	cmdlen.1729,1,1
+ 229               		.section	.progmem.data,"a",@progbits
+ 232               	__c.1733:
+ 233 0000 3F20 2800 		.string	"? ("
+ 236               	__c.1735:
+ 237 0004 2069 7320 		.string	" is unknown) Use one of"
+ 237      756E 6B6E 
+ 237      6F77 6E29 
+ 237      2055 7365 
+ 237      206F 6E65 
+ 238               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+ 239               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:00000000 ttydata.c
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:6      *ABS*:00000001 __zero_reg__
+                            *COM*:00000002 input_handle_func
+                            *COM*:00000002 output_flush_func
+                            *COM*:00000083 TTY_Tx_Buffer
+                            *COM*:00000083 TTY_Rx_Buffer
+                             .bss:00000000 cmdbuf
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:16     .text:00000000 callfn
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:138    .text:000000ca analyze_ttydata
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:12     .bss:00000081 cmdlen.1729
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:232    .progmem.data:00000000 __c.1733
+C:\Users\Benny\AppData\Local\Temp\ccwmKFn1.s:236    .progmem.data:00000004 __c.1735
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+fntab
+display_char
+__epilogue_restores__
+display_channel
+rb_get
+display_string_P
+display_string
+display_nl
+__do_clear_bss

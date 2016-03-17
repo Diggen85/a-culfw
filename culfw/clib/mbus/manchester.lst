@@ -1,0 +1,292 @@
+   1               		.file	"manchester.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.data
+  10               	manchEncodeTab:
+  11 0000 AA        		.byte	-86
+  12 0001 A9        		.byte	-87
+  13 0002 A6        		.byte	-90
+  14 0003 A5        		.byte	-91
+  15 0004 9A        		.byte	-102
+  16 0005 99        		.byte	-103
+  17 0006 96        		.byte	-106
+  18 0007 95        		.byte	-107
+  19 0008 6A        		.byte	106
+  20 0009 69        		.byte	105
+  21 000a 66        		.byte	102
+  22 000b 65        		.byte	101
+  23 000c 5A        		.byte	90
+  24 000d 59        		.byte	89
+  25 000e 56        		.byte	86
+  26 000f 55        		.byte	85
+  29               	manchDecodeTab:
+  30 0010 FF        		.byte	-1
+  31 0011 FF        		.byte	-1
+  32 0012 FF        		.byte	-1
+  33 0013 FF        		.byte	-1
+  34 0014 FF        		.byte	-1
+  35 0015 03        		.byte	3
+  36 0016 02        		.byte	2
+  37 0017 FF        		.byte	-1
+  38 0018 FF        		.byte	-1
+  39 0019 01        		.byte	1
+  40 001a 00        		.byte	0
+  41 001b FF        		.byte	-1
+  42 001c FF        		.byte	-1
+  43 001d FF        		.byte	-1
+  44 001e FF        		.byte	-1
+  45 001f FF        		.byte	-1
+  46               		.text
+  47               	.global	manchEncode
+  49               	manchEncode:
+  50 0000 A6E0      		ldi r26,lo8(6)
+  51 0002 B0E0      		ldi r27,0
+  52 0004 E0E0      		ldi r30,lo8(gs(1f))
+  53 0006 F0E0      		ldi r31,hi8(gs(1f))
+  54 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  55               	1:
+  56               	/* prologue: function */
+  57               	/* frame size = 6 */
+  58               	/* stack size = 8 */
+  59               	.L__stack_usage = 8
+  60 000c 9C83      		std Y+4,r25
+  61 000e 8B83      		std Y+3,r24
+  62 0010 7E83      		std Y+6,r23
+  63 0012 6D83      		std Y+5,r22
+  64 0014 8B81      		ldd r24,Y+3
+  65 0016 9C81      		ldd r25,Y+4
+  66 0018 FC01      		movw r30,r24
+  67 001a 8081      		ld r24,Z
+  68 001c 8295      		swap r24
+  69 001e 8F70      		andi r24,lo8(15)
+  70 0020 8983      		std Y+1,r24
+  71 0022 8B81      		ldd r24,Y+3
+  72 0024 9C81      		ldd r25,Y+4
+  73 0026 FC01      		movw r30,r24
+  74 0028 8081      		ld r24,Z
+  75 002a 8F70      		andi r24,lo8(15)
+  76 002c 8A83      		std Y+2,r24
+  77 002e 8981      		ldd r24,Y+1
+  78 0030 882F      		mov r24,r24
+  79 0032 90E0      		ldi r25,0
+  80 0034 8050      		subi r24,lo8(-(manchEncodeTab))
+  81 0036 9040      		sbci r25,hi8(-(manchEncodeTab))
+  82 0038 FC01      		movw r30,r24
+  83 003a 2081      		ld r18,Z
+  84 003c 8D81      		ldd r24,Y+5
+  85 003e 9E81      		ldd r25,Y+6
+  86 0040 FC01      		movw r30,r24
+  87 0042 2083      		st Z,r18
+  88 0044 8D81      		ldd r24,Y+5
+  89 0046 9E81      		ldd r25,Y+6
+  90 0048 0196      		adiw r24,1
+  91 004a 2A81      		ldd r18,Y+2
+  92 004c 222F      		mov r18,r18
+  93 004e 30E0      		ldi r19,0
+  94 0050 2050      		subi r18,lo8(-(manchEncodeTab))
+  95 0052 3040      		sbci r19,hi8(-(manchEncodeTab))
+  96 0054 F901      		movw r30,r18
+  97 0056 2081      		ld r18,Z
+  98 0058 FC01      		movw r30,r24
+  99 005a 2083      		st Z,r18
+ 100               	/* epilogue start */
+ 101 005c 2696      		adiw r28,6
+ 102 005e E2E0      		ldi r30, lo8(2)
+ 103 0060 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 105               	.global	manchDecode
+ 107               	manchDecode:
+ 108 0064 A8E0      		ldi r26,lo8(8)
+ 109 0066 B0E0      		ldi r27,0
+ 110 0068 E0E0      		ldi r30,lo8(gs(1f))
+ 111 006a F0E0      		ldi r31,hi8(gs(1f))
+ 112 006c 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+ 113               	1:
+ 114               	/* prologue: function */
+ 115               	/* frame size = 8 */
+ 116               	/* stack size = 10 */
+ 117               	.L__stack_usage = 10
+ 118 0070 9E83      		std Y+6,r25
+ 119 0072 8D83      		std Y+5,r24
+ 120 0074 7887      		std Y+8,r23
+ 121 0076 6F83      		std Y+7,r22
+ 122 0078 8D81      		ldd r24,Y+5
+ 123 007a 9E81      		ldd r25,Y+6
+ 124 007c FC01      		movw r30,r24
+ 125 007e 8081      		ld r24,Z
+ 126 0080 8295      		swap r24
+ 127 0082 8F70      		andi r24,lo8(15)
+ 128 0084 8983      		std Y+1,r24
+ 129 0086 8D81      		ldd r24,Y+5
+ 130 0088 9E81      		ldd r25,Y+6
+ 131 008a FC01      		movw r30,r24
+ 132 008c 8081      		ld r24,Z
+ 133 008e 8F70      		andi r24,lo8(15)
+ 134 0090 8A83      		std Y+2,r24
+ 135 0092 8D81      		ldd r24,Y+5
+ 136 0094 9E81      		ldd r25,Y+6
+ 137 0096 0196      		adiw r24,1
+ 138 0098 FC01      		movw r30,r24
+ 139 009a 8081      		ld r24,Z
+ 140 009c 8295      		swap r24
+ 141 009e 8F70      		andi r24,lo8(15)
+ 142 00a0 8B83      		std Y+3,r24
+ 143 00a2 8D81      		ldd r24,Y+5
+ 144 00a4 9E81      		ldd r25,Y+6
+ 145 00a6 0196      		adiw r24,1
+ 146 00a8 FC01      		movw r30,r24
+ 147 00aa 8081      		ld r24,Z
+ 148 00ac 8F70      		andi r24,lo8(15)
+ 149 00ae 8C83      		std Y+4,r24
+ 150 00b0 8981      		ldd r24,Y+1
+ 151 00b2 882F      		mov r24,r24
+ 152 00b4 90E0      		ldi r25,0
+ 153 00b6 8050      		subi r24,lo8(-(manchDecodeTab))
+ 154 00b8 9040      		sbci r25,hi8(-(manchDecodeTab))
+ 155 00ba FC01      		movw r30,r24
+ 156 00bc 8081      		ld r24,Z
+ 157 00be 21E0      		ldi r18,lo8(1)
+ 158 00c0 8F3F      		cpi r24,lo8(-1)
+ 159 00c2 01F0      		breq .L3
+ 160 00c4 20E0      		ldi r18,0
+ 161               	.L3:
+ 162 00c6 8A81      		ldd r24,Y+2
+ 163 00c8 882F      		mov r24,r24
+ 164 00ca 90E0      		ldi r25,0
+ 165 00cc 8050      		subi r24,lo8(-(manchDecodeTab))
+ 166 00ce 9040      		sbci r25,hi8(-(manchDecodeTab))
+ 167 00d0 FC01      		movw r30,r24
+ 168 00d2 9081      		ld r25,Z
+ 169 00d4 81E0      		ldi r24,lo8(1)
+ 170 00d6 9F3F      		cpi r25,lo8(-1)
+ 171 00d8 01F0      		breq .L4
+ 172 00da 80E0      		ldi r24,0
+ 173               	.L4:
+ 174 00dc 822B      		or r24,r18
+ 175 00de 282F      		mov r18,r24
+ 176 00e0 30E0      		ldi r19,0
+ 177 00e2 8B81      		ldd r24,Y+3
+ 178 00e4 882F      		mov r24,r24
+ 179 00e6 90E0      		ldi r25,0
+ 180 00e8 8050      		subi r24,lo8(-(manchDecodeTab))
+ 181 00ea 9040      		sbci r25,hi8(-(manchDecodeTab))
+ 182 00ec FC01      		movw r30,r24
+ 183 00ee 9081      		ld r25,Z
+ 184 00f0 81E0      		ldi r24,lo8(1)
+ 185 00f2 9F3F      		cpi r25,lo8(-1)
+ 186 00f4 01F0      		breq .L5
+ 187 00f6 80E0      		ldi r24,0
+ 188               	.L5:
+ 189 00f8 882F      		mov r24,r24
+ 190 00fa 90E0      		ldi r25,0
+ 191 00fc 282B      		or r18,r24
+ 192 00fe 392B      		or r19,r25
+ 193 0100 8C81      		ldd r24,Y+4
+ 194 0102 882F      		mov r24,r24
+ 195 0104 90E0      		ldi r25,0
+ 196 0106 8050      		subi r24,lo8(-(manchDecodeTab))
+ 197 0108 9040      		sbci r25,hi8(-(manchDecodeTab))
+ 198 010a FC01      		movw r30,r24
+ 199 010c 9081      		ld r25,Z
+ 200 010e 81E0      		ldi r24,lo8(1)
+ 201 0110 9F3F      		cpi r25,lo8(-1)
+ 202 0112 01F0      		breq .L6
+ 203 0114 80E0      		ldi r24,0
+ 204               	.L6:
+ 205 0116 882F      		mov r24,r24
+ 206 0118 90E0      		ldi r25,0
+ 207 011a 822B      		or r24,r18
+ 208 011c 932B      		or r25,r19
+ 209 011e 892B      		or r24,r25
+ 210 0120 01F0      		breq .L7
+ 211 0122 81E0      		ldi r24,lo8(1)
+ 212 0124 00C0      		rjmp .L8
+ 213               	.L7:
+ 214 0126 8981      		ldd r24,Y+1
+ 215 0128 882F      		mov r24,r24
+ 216 012a 90E0      		ldi r25,0
+ 217 012c 8050      		subi r24,lo8(-(manchDecodeTab))
+ 218 012e 9040      		sbci r25,hi8(-(manchDecodeTab))
+ 219 0130 FC01      		movw r30,r24
+ 220 0132 8081      		ld r24,Z
+ 221 0134 882F      		mov r24,r24
+ 222 0136 90E0      		ldi r25,0
+ 223 0138 0024      		clr __tmp_reg__
+ 224 013a 9695      		lsr r25
+ 225 013c 8795      		ror r24
+ 226 013e 0794      		ror __tmp_reg__
+ 227 0140 9695      		lsr r25
+ 228 0142 8795      		ror r24
+ 229 0144 0794      		ror __tmp_reg__
+ 230 0146 982F      		mov r25,r24
+ 231 0148 802D      		mov r24,__tmp_reg__
+ 232 014a 282F      		mov r18,r24
+ 233 014c 8A81      		ldd r24,Y+2
+ 234 014e 882F      		mov r24,r24
+ 235 0150 90E0      		ldi r25,0
+ 236 0152 8050      		subi r24,lo8(-(manchDecodeTab))
+ 237 0154 9040      		sbci r25,hi8(-(manchDecodeTab))
+ 238 0156 FC01      		movw r30,r24
+ 239 0158 8081      		ld r24,Z
+ 240 015a 882F      		mov r24,r24
+ 241 015c 90E0      		ldi r25,0
+ 242 015e 8295      		swap r24
+ 243 0160 9295      		swap r25
+ 244 0162 907F      		andi r25,0xf0
+ 245 0164 9827      		eor r25,r24
+ 246 0166 807F      		andi r24,0xf0
+ 247 0168 9827      		eor r25,r24
+ 248 016a 282B      		or r18,r24
+ 249 016c 8B81      		ldd r24,Y+3
+ 250 016e 882F      		mov r24,r24
+ 251 0170 90E0      		ldi r25,0
+ 252 0172 8050      		subi r24,lo8(-(manchDecodeTab))
+ 253 0174 9040      		sbci r25,hi8(-(manchDecodeTab))
+ 254 0176 FC01      		movw r30,r24
+ 255 0178 8081      		ld r24,Z
+ 256 017a 882F      		mov r24,r24
+ 257 017c 90E0      		ldi r25,0
+ 258 017e 880F      		lsl r24
+ 259 0180 991F      		rol r25
+ 260 0182 880F      		lsl r24
+ 261 0184 991F      		rol r25
+ 262 0186 282B      		or r18,r24
+ 263 0188 8C81      		ldd r24,Y+4
+ 264 018a 882F      		mov r24,r24
+ 265 018c 90E0      		ldi r25,0
+ 266 018e 8050      		subi r24,lo8(-(manchDecodeTab))
+ 267 0190 9040      		sbci r25,hi8(-(manchDecodeTab))
+ 268 0192 FC01      		movw r30,r24
+ 269 0194 8081      		ld r24,Z
+ 270 0196 822B      		or r24,r18
+ 271 0198 282F      		mov r18,r24
+ 272 019a 8F81      		ldd r24,Y+7
+ 273 019c 9885      		ldd r25,Y+8
+ 274 019e FC01      		movw r30,r24
+ 275 01a0 2083      		st Z,r18
+ 276 01a2 80E0      		ldi r24,0
+ 277               	.L8:
+ 278               	/* epilogue start */
+ 279 01a4 2896      		adiw r28,8
+ 280 01a6 E2E0      		ldi r30, lo8(2)
+ 281 01a8 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 283               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+ 284               	.global __do_copy_data
+DEFINED SYMBOLS
+                            *ABS*:00000000 manchester.c
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:6      *ABS*:00000001 __zero_reg__
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:10     .data:00000000 manchEncodeTab
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:29     .data:00000010 manchDecodeTab
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:49     .text:00000000 manchEncode
+C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:107    .text:00000064 manchDecode
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+__epilogue_restores__
+__do_copy_data

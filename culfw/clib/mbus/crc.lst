@@ -1,0 +1,87 @@
+   1               		.file	"crc.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.global	crcCalc
+  10               	crcCalc:
+  11 0000 A4E0      		ldi r26,lo8(4)
+  12 0002 B0E0      		ldi r27,0
+  13 0004 E0E0      		ldi r30,lo8(gs(1f))
+  14 0006 F0E0      		ldi r31,hi8(gs(1f))
+  15 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  16               	1:
+  17               	/* prologue: function */
+  18               	/* frame size = 4 */
+  19               	/* stack size = 6 */
+  20               	.L__stack_usage = 6
+  21 000c 9B83      		std Y+3,r25
+  22 000e 8A83      		std Y+2,r24
+  23 0010 6C83      		std Y+4,r22
+  24 0012 1982      		std Y+1,__zero_reg__
+  25 0014 00C0      		rjmp .L2
+  26               	.L5:
+  27 0016 8A81      		ldd r24,Y+2
+  28 0018 9B81      		ldd r25,Y+3
+  29 001a 8827      		clr r24
+  30 001c 9078      		andi r25,128
+  31 001e 292F      		mov r18,r25
+  32 0020 3327      		clr r19
+  33 0022 8C81      		ldd r24,Y+4
+  34 0024 882F      		mov r24,r24
+  35 0026 90E0      		ldi r25,0
+  36 0028 8078      		andi r24,128
+  37 002a 9927      		clr r25
+  38 002c 2817      		cp r18,r24
+  39 002e 3907      		cpc r19,r25
+  40 0030 01F0      		breq .L3
+  41 0032 8A81      		ldd r24,Y+2
+  42 0034 9B81      		ldd r25,Y+3
+  43 0036 880F      		lsl r24
+  44 0038 991F      		rol r25
+  45 003a 25E6      		ldi r18,101
+  46 003c 8227      		eor r24,r18
+  47 003e 2DE3      		ldi r18,61
+  48 0040 9227      		eor r25,r18
+  49 0042 9B83      		std Y+3,r25
+  50 0044 8A83      		std Y+2,r24
+  51 0046 00C0      		rjmp .L4
+  52               	.L3:
+  53 0048 8A81      		ldd r24,Y+2
+  54 004a 9B81      		ldd r25,Y+3
+  55 004c 880F      		lsl r24
+  56 004e 991F      		rol r25
+  57 0050 9B83      		std Y+3,r25
+  58 0052 8A83      		std Y+2,r24
+  59               	.L4:
+  60 0054 8C81      		ldd r24,Y+4
+  61 0056 880F      		lsl r24
+  62 0058 8C83      		std Y+4,r24
+  63 005a 8981      		ldd r24,Y+1
+  64 005c 8F5F      		subi r24,lo8(-(1))
+  65 005e 8983      		std Y+1,r24
+  66               	.L2:
+  67 0060 8981      		ldd r24,Y+1
+  68 0062 8830      		cpi r24,lo8(8)
+  69 0064 00F0      		brlo .L5
+  70 0066 8A81      		ldd r24,Y+2
+  71 0068 9B81      		ldd r25,Y+3
+  72               	/* epilogue start */
+  73 006a 2496      		adiw r28,4
+  74 006c E2E0      		ldi r30, lo8(2)
+  75 006e 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+  77               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+DEFINED SYMBOLS
+                            *ABS*:00000000 crc.c
+C:\Users\Benny\AppData\Local\Temp\ccpoxKHs.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccpoxKHs.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccpoxKHs.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccpoxKHs.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccpoxKHs.s:6      *ABS*:00000001 __zero_reg__
+C:\Users\Benny\AppData\Local\Temp\ccpoxKHs.s:10     .text:00000000 crcCalc
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+__epilogue_restores__

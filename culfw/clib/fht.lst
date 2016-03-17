@@ -1,0 +1,179 @@
+   1               		.file	"fht.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.comm	packetCheckValues,1,1
+   8               		.comm	fht_hc0,1,1
+   9               		.comm	fht_hc1,1,1
+  10               		.text
+  11               	.global	fht_display_buf
+  13               	fht_display_buf:
+  14 0000 A3E0      		ldi r26,lo8(3)
+  15 0002 B0E0      		ldi r27,0
+  16 0004 E0E0      		ldi r30,lo8(gs(1f))
+  17 0006 F0E0      		ldi r31,hi8(gs(1f))
+  18 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  19               	1:
+  20               	/* prologue: function */
+  21               	/* frame size = 3 */
+  22               	/* stack size = 5 */
+  23               	.L__stack_usage = 5
+  24 000c 9B83      		std Y+3,r25
+  25 000e 8A83      		std Y+2,r24
+  26 0010 8091 0000 		lds r24,tx_report
+  27 0014 882F      		mov r24,r24
+  28 0016 90E0      		ldi r25,0
+  29 0018 8074      		andi r24,64
+  30 001a 9927      		clr r25
+  31 001c 892B      		or r24,r25
+  32 001e 01F4      		brne .L2
+  33 0020 00C0      		rjmp .L1
+  34               	.L2:
+  35 0022 84E5      		ldi r24,lo8(84)
+  36 0024 0E94 0000 		call display_char
+  37 0028 1982      		std Y+1,__zero_reg__
+  38 002a 00C0      		rjmp .L4
+  39               	.L5:
+  40 002c 8981      		ldd r24,Y+1
+  41 002e 882F      		mov r24,r24
+  42 0030 90E0      		ldi r25,0
+  43 0032 2A81      		ldd r18,Y+2
+  44 0034 3B81      		ldd r19,Y+3
+  45 0036 820F      		add r24,r18
+  46 0038 931F      		adc r25,r19
+  47 003a FC01      		movw r30,r24
+  48 003c 8081      		ld r24,Z
+  49 003e 0E94 0000 		call display_hex2
+  50 0042 8981      		ldd r24,Y+1
+  51 0044 8F5F      		subi r24,lo8(-(1))
+  52 0046 8983      		std Y+1,r24
+  53               	.L4:
+  54 0048 8981      		ldd r24,Y+1
+  55 004a 8530      		cpi r24,lo8(5)
+  56 004c 00F0      		brlo .L5
+  57 004e 8091 0000 		lds r24,tx_report
+  58 0052 882F      		mov r24,r24
+  59 0054 90E0      		ldi r25,0
+  60 0056 8072      		andi r24,32
+  61 0058 9927      		clr r25
+  62 005a 892B      		or r24,r25
+  63 005c 01F0      		breq .L6
+  64 005e 8AEF      		ldi r24,lo8(-6)
+  65 0060 0E94 0000 		call display_hex2
+  66               	.L6:
+  67 0064 0E94 0000 		call display_nl
+  68               	.L1:
+  69               	/* epilogue start */
+  70 0068 2396      		adiw r28,3
+  71 006a E2E0      		ldi r30, lo8(2)
+  72 006c 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+  74               	.global	fht_init
+  76               	fht_init:
+  77 0070 A0E0      		ldi r26,0
+  78 0072 B0E0      		ldi r27,0
+  79 0074 E0E0      		ldi r30,lo8(gs(1f))
+  80 0076 F0E0      		ldi r31,hi8(gs(1f))
+  81 0078 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  82               	1:
+  83               	/* prologue: function */
+  84               	/* frame size = 0 */
+  85               	/* stack size = 2 */
+  86               	.L__stack_usage = 2
+  87 007c 85E3      		ldi r24,lo8(53)
+  88 007e 90E0      		ldi r25,0
+  89 0080 0E94 0000 		call erb
+  90 0084 8093 0000 		sts fht_hc0,r24
+  91 0088 86E3      		ldi r24,lo8(54)
+  92 008a 90E0      		ldi r25,0
+  93 008c 0E94 0000 		call erb
+  94 0090 8093 0000 		sts fht_hc1,r24
+  95               	/* epilogue start */
+  96 0094 E2E0      		ldi r30, lo8(2)
+  97 0096 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+  99               	.global	fhtsend
+ 101               	fhtsend:
+ 102 009a A9E0      		ldi r26,lo8(9)
+ 103 009c B0E0      		ldi r27,0
+ 104 009e E0E0      		ldi r30,lo8(gs(1f))
+ 105 00a0 F0E0      		ldi r31,hi8(gs(1f))
+ 106 00a2 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+ 107               	1:
+ 108               	/* prologue: function */
+ 109               	/* frame size = 9 */
+ 110               	/* stack size = 11 */
+ 111               	.L__stack_usage = 11
+ 112 00a6 9987      		std Y+9,r25
+ 113 00a8 8887      		std Y+8,r24
+ 114 00aa 8885      		ldd r24,Y+8
+ 115 00ac 9985      		ldd r25,Y+9
+ 116 00ae 0196      		adiw r24,1
+ 117 00b0 9E01      		movw r18,r28
+ 118 00b2 2E5F      		subi r18,-2
+ 119 00b4 3F4F      		sbci r19,-1
+ 120 00b6 45E0      		ldi r20,lo8(5)
+ 121 00b8 B901      		movw r22,r18
+ 122 00ba 0E94 0000 		call fromhex
+ 123 00be 8983      		std Y+1,r24
+ 124 00c0 8981      		ldd r24,Y+1
+ 125 00c2 8430      		cpi r24,lo8(4)
+ 126 00c4 00F4      		brsh .L8
+ 127 00c6 8A81      		ldd r24,Y+2
+ 128 00c8 8130      		cpi r24,lo8(1)
+ 129 00ca 01F4      		brne .L10
+ 130 00cc 8981      		ldd r24,Y+1
+ 131 00ce 8330      		cpi r24,lo8(3)
+ 132 00d0 01F4      		brne .L11
+ 133 00d2 8B81      		ldd r24,Y+3
+ 134 00d4 682F      		mov r22,r24
+ 135 00d6 85E3      		ldi r24,lo8(53)
+ 136 00d8 90E0      		ldi r25,0
+ 137 00da 0E94 0000 		call ewb
+ 138 00de 8C81      		ldd r24,Y+4
+ 139 00e0 682F      		mov r22,r24
+ 140 00e2 86E3      		ldi r24,lo8(54)
+ 141 00e4 90E0      		ldi r25,0
+ 142 00e6 0E94 0000 		call ewb
+ 143 00ea 0E94 0000 		call fht_init
+ 144 00ee 00C0      		rjmp .L8
+ 145               	.L11:
+ 146 00f0 8091 0000 		lds r24,fht_hc0
+ 147 00f4 0E94 0000 		call display_hex2
+ 148 00f8 8091 0000 		lds r24,fht_hc1
+ 149 00fc 0E94 0000 		call display_hex2
+ 150               	.L10:
+ 151 0100 0E94 0000 		call display_nl
+ 152 0104 0000      		nop
+ 153               	.L8:
+ 154               	/* epilogue start */
+ 155 0106 2996      		adiw r28,9
+ 156 0108 E2E0      		ldi r30, lo8(2)
+ 157 010a 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 159               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+ 160               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:00000000 fht.c
+C:\Users\Benny\AppData\Local\Temp\ccLE4C3p.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccLE4C3p.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccLE4C3p.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccLE4C3p.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccLE4C3p.s:6      *ABS*:00000001 __zero_reg__
+                            *COM*:00000001 packetCheckValues
+                            *COM*:00000001 fht_hc0
+                            *COM*:00000001 fht_hc1
+C:\Users\Benny\AppData\Local\Temp\ccLE4C3p.s:13     .text:00000000 fht_display_buf
+C:\Users\Benny\AppData\Local\Temp\ccLE4C3p.s:76     .text:00000070 fht_init
+C:\Users\Benny\AppData\Local\Temp\ccLE4C3p.s:101    .text:0000009a fhtsend
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+tx_report
+display_char
+display_hex2
+display_nl
+__epilogue_restores__
+erb
+fromhex
+ewb
+__do_clear_bss

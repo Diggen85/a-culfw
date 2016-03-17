@@ -1,0 +1,206 @@
+   1               		.file	"fband.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               	.global	frequencyMode
+   8               		.section .bss
+  11               	frequencyMode:
+  12 0000 00        		.zero	1
+  13               		.text
+  14               	.global	readEEpromValue
+  16               	readEEpromValue:
+  17 0000 A7E0      		ldi r26,lo8(7)
+  18 0002 B0E0      		ldi r27,0
+  19 0004 E0E0      		ldi r30,lo8(gs(1f))
+  20 0006 F0E0      		ldi r31,hi8(gs(1f))
+  21 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  22               	1:
+  23               	/* prologue: function */
+  24               	/* frame size = 7 */
+  25               	/* stack size = 9 */
+  26               	.L__stack_usage = 9
+  27 000c 9F83      		std Y+7,r25
+  28 000e 8E83      		std Y+6,r24
+  29 0010 1D82      		std Y+5,__zero_reg__
+  30 0012 8D81      		ldd r24,Y+5
+  31 0014 8C83      		std Y+4,r24
+  32 0016 9E01      		movw r18,r28
+  33 0018 2C5F      		subi r18,-4
+  34 001a 3F4F      		sbci r19,-1
+  35 001c 8E81      		ldd r24,Y+6
+  36 001e 9F81      		ldd r25,Y+7
+  37 0020 42E0      		ldi r20,lo8(2)
+  38 0022 B901      		movw r22,r18
+  39 0024 0E94 0000 		call fromhex
+  40 0028 8B83      		std Y+3,r24
+  41 002a 8B81      		ldd r24,Y+3
+  42 002c 8230      		cpi r24,lo8(2)
+  43 002e 01F4      		brne .L2
+  44 0030 8C81      		ldd r24,Y+4
+  45 0032 882F      		mov r24,r24
+  46 0034 90E0      		ldi r25,0
+  47 0036 382F      		mov r19,r24
+  48 0038 2227      		clr r18
+  49 003a 8D81      		ldd r24,Y+5
+  50 003c 882F      		mov r24,r24
+  51 003e 90E0      		ldi r25,0
+  52 0040 822B      		or r24,r18
+  53 0042 932B      		or r25,r19
+  54 0044 9A83      		std Y+2,r25
+  55 0046 8983      		std Y+1,r24
+  56 0048 00C0      		rjmp .L3
+  57               	.L2:
+  58 004a 8C81      		ldd r24,Y+4
+  59 004c 882F      		mov r24,r24
+  60 004e 90E0      		ldi r25,0
+  61 0050 9A83      		std Y+2,r25
+  62 0052 8983      		std Y+1,r24
+  63               	.L3:
+  64 0054 8981      		ldd r24,Y+1
+  65 0056 9A81      		ldd r25,Y+2
+  66 0058 0E94 0000 		call erb
+  67 005c 8B83      		std Y+3,r24
+  68 005e 8B81      		ldd r24,Y+3
+  69               	/* epilogue start */
+  70 0060 2796      		adiw r28,7
+  71 0062 E2E0      		ldi r30, lo8(2)
+  72 0064 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+  74               		.section	.rodata
+  75               	.LC0:
+  76 0000 3046 00   		.string	"0F"
+  77               	.LC1:
+  78 0003 3130 00   		.string	"10"
+  79               	.LC2:
+  80 0006 3131 00   		.string	"11"
+  81               		.text
+  82               	.global	checkFrequency
+  84               	checkFrequency:
+  85 0068 A9E0      		ldi r26,lo8(9)
+  86 006a B0E0      		ldi r27,0
+  87 006c E0E0      		ldi r30,lo8(gs(1f))
+  88 006e F0E0      		ldi r31,hi8(gs(1f))
+  89 0070 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  90               	1:
+  91               	/* prologue: function */
+  92               	/* frame size = 9 */
+  93               	/* stack size = 11 */
+  94               	.L__stack_usage = 11
+  95 0074 80E0      		ldi r24,lo8(.LC0)
+  96 0076 90E0      		ldi r25,hi8(.LC0)
+  97 0078 0E94 0000 		call readEEpromValue
+  98 007c 882F      		mov r24,r24
+  99 007e 90E0      		ldi r25,0
+ 100 0080 A0E0      		ldi r26,0
+ 101 0082 B0E0      		ldi r27,0
+ 102 0084 8983      		std Y+1,r24
+ 103 0086 9A83      		std Y+2,r25
+ 104 0088 AB83      		std Y+3,r26
+ 105 008a BC83      		std Y+4,r27
+ 106 008c 80E0      		ldi r24,lo8(.LC1)
+ 107 008e 90E0      		ldi r25,hi8(.LC1)
+ 108 0090 0E94 0000 		call readEEpromValue
+ 109 0094 882F      		mov r24,r24
+ 110 0096 90E0      		ldi r25,0
+ 111 0098 9E83      		std Y+6,r25
+ 112 009a 8D83      		std Y+5,r24
+ 113 009c 80E0      		ldi r24,lo8(.LC2)
+ 114 009e 90E0      		ldi r25,hi8(.LC2)
+ 115 00a0 0E94 0000 		call readEEpromValue
+ 116 00a4 8F83      		std Y+7,r24
+ 117 00a6 8981      		ldd r24,Y+1
+ 118 00a8 9A81      		ldd r25,Y+2
+ 119 00aa AB81      		ldd r26,Y+3
+ 120 00ac BC81      		ldd r27,Y+4
+ 121 00ae AC01      		movw r20,r24
+ 122 00b0 3327      		clr r19
+ 123 00b2 2227      		clr r18
+ 124 00b4 8D81      		ldd r24,Y+5
+ 125 00b6 9E81      		ldd r25,Y+6
+ 126 00b8 982F      		mov r25,r24
+ 127 00ba 8827      		clr r24
+ 128 00bc CC01      		movw r24,r24
+ 129 00be A0E0      		ldi r26,0
+ 130 00c0 B0E0      		ldi r27,0
+ 131 00c2 280F      		add r18,r24
+ 132 00c4 391F      		adc r19,r25
+ 133 00c6 4A1F      		adc r20,r26
+ 134 00c8 5B1F      		adc r21,r27
+ 135 00ca 8F81      		ldd r24,Y+7
+ 136 00cc 882F      		mov r24,r24
+ 137 00ce 90E0      		ldi r25,0
+ 138 00d0 A0E0      		ldi r26,0
+ 139 00d2 B0E0      		ldi r27,0
+ 140 00d4 280F      		add r18,r24
+ 141 00d6 391F      		adc r19,r25
+ 142 00d8 4A1F      		adc r20,r26
+ 143 00da 5B1F      		adc r21,r27
+ 144 00dc DA01      		movw r26,r20
+ 145 00de C901      		movw r24,r18
+ 146 00e0 880F      		lsl r24
+ 147 00e2 991F      		rol r25
+ 148 00e4 AA1F      		rol r26
+ 149 00e6 BB1F      		rol r27
+ 150 00e8 820F      		add r24,r18
+ 151 00ea 931F      		adc r25,r19
+ 152 00ec A41F      		adc r26,r20
+ 153 00ee B51F      		adc r27,r21
+ 154 00f0 880F      		lsl r24
+ 155 00f2 991F      		rol r25
+ 156 00f4 AA1F      		rol r26
+ 157 00f6 BB1F      		rol r27
+ 158 00f8 880F      		lsl r24
+ 159 00fa 991F      		rol r25
+ 160 00fc AA1F      		rol r26
+ 161 00fe BB1F      		rol r27
+ 162 0100 820F      		add r24,r18
+ 163 0102 931F      		adc r25,r19
+ 164 0104 A41F      		adc r26,r20
+ 165 0106 B51F      		adc r27,r21
+ 166 0108 880F      		lsl r24
+ 167 010a 991F      		rol r25
+ 168 010c AA1F      		rol r26
+ 169 010e BB1F      		rol r27
+ 170 0110 CD01      		movw r24,r26
+ 171 0112 AA27      		clr r26
+ 172 0114 BB27      		clr r27
+ 173 0116 9987      		std Y+9,r25
+ 174 0118 8887      		std Y+8,r24
+ 175 011a 8885      		ldd r24,Y+8
+ 176 011c 9985      		ldd r25,Y+9
+ 177 011e 853F      		cpi r24,-11
+ 178 0120 9140      		sbci r25,1
+ 179 0122 00F0      		brlo .L6
+ 180 0124 82E0      		ldi r24,lo8(2)
+ 181 0126 8093 0000 		sts frequencyMode,r24
+ 182 012a 00C0      		rjmp .L5
+ 183               	.L6:
+ 184 012c 81E0      		ldi r24,lo8(1)
+ 185 012e 8093 0000 		sts frequencyMode,r24
+ 186               	.L5:
+ 187               	/* epilogue start */
+ 188 0132 2996      		adiw r28,9
+ 189 0134 E2E0      		ldi r30, lo8(2)
+ 190 0136 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 192               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+ 193               	.global __do_copy_data
+ 194               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:00000000 fband.c
+C:\Users\Benny\AppData\Local\Temp\ccHS7S2e.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccHS7S2e.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccHS7S2e.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccHS7S2e.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccHS7S2e.s:6      *ABS*:00000001 __zero_reg__
+C:\Users\Benny\AppData\Local\Temp\ccHS7S2e.s:11     .bss:00000000 frequencyMode
+C:\Users\Benny\AppData\Local\Temp\ccHS7S2e.s:16     .text:00000000 readEEpromValue
+C:\Users\Benny\AppData\Local\Temp\ccHS7S2e.s:84     .text:00000068 checkFrequency
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+fromhex
+erb
+__epilogue_restores__
+__do_copy_data
+__do_clear_bss

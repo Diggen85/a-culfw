@@ -1,0 +1,601 @@
+   1               		.file	"rf_native.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.comm	packetCheckValues,1,1
+   8               		.local	native_on
+   9               		.comm	native_on,1,1
+  10               	.global	NATIVE_CFG
+  11               		.section	.progmem.data,"a",@progbits
+  14               	NATIVE_CFG:
+  15 0000 0B        		.byte	11
+  16 0001 06        		.byte	6
+  17 0002 0D        		.byte	13
+  18 0003 21        		.byte	33
+  19 0004 0E        		.byte	14
+  20 0005 65        		.byte	101
+  21 0006 0F        		.byte	15
+  22 0007 6A        		.byte	106
+  23 0008 17        		.byte	23
+  24 0009 00        		.byte	0
+  25 000a 18        		.byte	24
+  26 000b 18        		.byte	24
+  27 000c 19        		.byte	25
+  28 000d 16        		.byte	22
+  29 000e 1B        		.byte	27
+  30 000f 43        		.byte	67
+  31 0010 1C        		.byte	28
+  32 0011 68        		.byte	104
+  33 0012 25        		.byte	37
+  34 0013 00        		.byte	0
+  35 0014 26        		.byte	38
+  36 0015 11        		.byte	17
+  37 0016 00        		.byte	0
+  38 0017 01        		.byte	1
+  39 0018 02        		.byte	2
+  40 0019 46        		.byte	70
+  41 001a 05        		.byte	5
+  42 001b D4        		.byte	-44
+  43 001c 04        		.byte	4
+  44 001d 2D        		.byte	45
+  45 001e 03        		.byte	3
+  46 001f 02        		.byte	2
+  47 0020 07        		.byte	7
+  48 0021 00        		.byte	0
+  49 0022 08        		.byte	8
+  50 0023 02        		.byte	2
+  51 0024 10        		.byte	16
+  52 0025 89        		.byte	-119
+  53 0026 11        		.byte	17
+  54 0027 5C        		.byte	92
+  55 0028 12        		.byte	18
+  56 0029 06        		.byte	6
+  57 002a 15        		.byte	21
+  58 002b 56        		.byte	86
+  59 002c FF        		.byte	-1
+  60 002d 00        		.zero	1
+  61               	.global	MODE_CFG
+  64               	MODE_CFG:
+  65 002e 03        		.byte	3
+  66 002f 02        		.byte	2
+  67 0030 FF        		.byte	-1
+  68 0031 0000 0000 		.zero	17
+  68      0000 0000 
+  68      0000 0000 
+  68      0000 0000 
+  68      00
+  69 0042 03        		.byte	3
+  70 0043 02        		.byte	2
+  71 0044 10        		.byte	16
+  72 0045 88        		.byte	-120
+  73 0046 11        		.byte	17
+  74 0047 82        		.byte	-126
+  75 0048 FF        		.byte	-1
+  76 0049 0000 0000 		.zero	13
+  76      0000 0000 
+  76      0000 0000 
+  76      00
+  77 0056 03        		.byte	3
+  78 0057 07        		.byte	7
+  79 0058 10        		.byte	16
+  80 0059 88        		.byte	-120
+  81 005a 11        		.byte	17
+  82 005b 0B        		.byte	11
+  83 005c 0D        		.byte	13
+  84 005d 21        		.byte	33
+  85 005e 0E        		.byte	14
+  86 005f 6B        		.byte	107
+  87 0060 0F        		.byte	15
+  88 0061 D0        		.byte	-48
+  89 0062 15        		.byte	21
+  90 0063 53        		.byte	83
+  91 0064 FF        		.byte	-1
+  92 0065 0000 0000 		.zero	5
+  92      00
+  93               		.text
+  94               	.global	native_init
+  96               	native_init:
+  97 0000 A5E1      		ldi r26,lo8(21)
+  98 0002 B0E0      		ldi r27,0
+  99 0004 E0E0      		ldi r30,lo8(gs(1f))
+ 100 0006 F0E0      		ldi r31,hi8(gs(1f))
+ 101 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+ 102               	1:
+ 103               	/* prologue: function */
+ 104               	/* frame size = 21 */
+ 105               	/* stack size = 23 */
+ 106               	.L__stack_usage = 23
+ 107 000c 8D8B      		std Y+21,r24
+ 108 000e 8DE3      		ldi r24,lo8(61)
+ 109 0010 90E0      		ldi r25,0
+ 110 0012 2DE3      		ldi r18,lo8(61)
+ 111 0014 30E0      		ldi r19,0
+ 112 0016 F901      		movw r30,r18
+ 113 0018 2081      		ld r18,Z
+ 114 001a 2B7F      		andi r18,lo8(-5)
+ 115 001c FC01      		movw r30,r24
+ 116 001e 2083      		st Z,r18
+ 117 0020 84E2      		ldi r24,lo8(36)
+ 118 0022 90E0      		ldi r25,0
+ 119 0024 24E2      		ldi r18,lo8(36)
+ 120 0026 30E0      		ldi r19,0
+ 121 0028 F901      		movw r30,r18
+ 122 002a 2081      		ld r18,Z
+ 123 002c 2061      		ori r18,lo8(16)
+ 124 002e FC01      		movw r30,r24
+ 125 0030 2083      		st Z,r18
+ 126 0032 1092 0000 		sts native_on,__zero_reg__
+ 127 0036 85E2      		ldi r24,lo8(37)
+ 128 0038 90E0      		ldi r25,0
+ 129 003a 25E2      		ldi r18,lo8(37)
+ 130 003c 30E0      		ldi r19,0
+ 131 003e F901      		movw r30,r18
+ 132 0040 2081      		ld r18,Z
+ 133 0042 2061      		ori r18,lo8(16)
+ 134 0044 FC01      		movw r30,r24
+ 135 0046 2083      		st Z,r18
+ 136 0048 8EE1      		ldi r24,lo8(30)
+ 137 004a 90E0      		ldi r25,0
+ 138 004c 0E94 0000 		call my_delay_us
+ 139 0050 85E2      		ldi r24,lo8(37)
+ 140 0052 90E0      		ldi r25,0
+ 141 0054 25E2      		ldi r18,lo8(37)
+ 142 0056 30E0      		ldi r19,0
+ 143 0058 F901      		movw r30,r18
+ 144 005a 2081      		ld r18,Z
+ 145 005c 2F7E      		andi r18,lo8(-17)
+ 146 005e FC01      		movw r30,r24
+ 147 0060 2083      		st Z,r18
+ 148 0062 8EE1      		ldi r24,lo8(30)
+ 149 0064 90E0      		ldi r25,0
+ 150 0066 0E94 0000 		call my_delay_us
+ 151 006a 85E2      		ldi r24,lo8(37)
+ 152 006c 90E0      		ldi r25,0
+ 153 006e 25E2      		ldi r18,lo8(37)
+ 154 0070 30E0      		ldi r19,0
+ 155 0072 F901      		movw r30,r18
+ 156 0074 2081      		ld r18,Z
+ 157 0076 2061      		ori r18,lo8(16)
+ 158 0078 FC01      		movw r30,r24
+ 159 007a 2083      		st Z,r18
+ 160 007c 8DE2      		ldi r24,lo8(45)
+ 161 007e 90E0      		ldi r25,0
+ 162 0080 0E94 0000 		call my_delay_us
+ 163 0084 80E3      		ldi r24,lo8(48)
+ 164 0086 0E94 0000 		call ccStrobe
+ 165 008a 84E6      		ldi r24,lo8(100)
+ 166 008c 90E0      		ldi r25,0
+ 167 008e 0E94 0000 		call my_delay_us
+ 168 0092 8D89      		ldd r24,Y+21
+ 169 0094 8823      		tst r24
+ 170 0096 01F0      		breq .L2
+ 171 0098 8D89      		ldd r24,Y+21
+ 172 009a 8430      		cpi r24,lo8(4)
+ 173 009c 00F0      		brlo .L3
+ 174               	.L2:
+ 175 009e 00C0      		rjmp .L1
+ 176               	.L3:
+ 177 00a0 1982      		std Y+1,__zero_reg__
+ 178 00a2 00C0      		rjmp .L5
+ 179               	.L8:
+ 180 00a4 8981      		ldd r24,Y+1
+ 181 00a6 882F      		mov r24,r24
+ 182 00a8 90E0      		ldi r25,0
+ 183 00aa 8050      		subi r24,lo8(-(NATIVE_CFG))
+ 184 00ac 9040      		sbci r25,hi8(-(NATIVE_CFG))
+ 185 00ae 9C83      		std Y+4,r25
+ 186 00b0 8B83      		std Y+3,r24
+ 187 00b2 8B81      		ldd r24,Y+3
+ 188 00b4 9C81      		ldd r25,Y+4
+ 189 00b6 FC01      		movw r30,r24
+ 190               	/* #APP */
+ 191               	 ;  133 "../../clib/rf_native.c" 1
+ 192 00b8 8491      		lpm r24, Z
+ 193               		
+ 194               	 ;  0 "" 2
+ 195               	/* #NOAPP */
+ 196 00ba 8D83      		std Y+5,r24
+ 197 00bc 8D81      		ldd r24,Y+5
+ 198 00be 8134      		cpi r24,lo8(65)
+ 199 00c0 00F0      		brlo .L6
+ 200 00c2 00C0      		rjmp .L7
+ 201               	.L6:
+ 202 00c4 8981      		ldd r24,Y+1
+ 203 00c6 882F      		mov r24,r24
+ 204 00c8 90E0      		ldi r25,0
+ 205 00ca 0196      		adiw r24,1
+ 206 00cc 8050      		subi r24,lo8(-(NATIVE_CFG))
+ 207 00ce 9040      		sbci r25,hi8(-(NATIVE_CFG))
+ 208 00d0 9F83      		std Y+7,r25
+ 209 00d2 8E83      		std Y+6,r24
+ 210 00d4 8E81      		ldd r24,Y+6
+ 211 00d6 9F81      		ldd r25,Y+7
+ 212 00d8 FC01      		movw r30,r24
+ 213               	/* #APP */
+ 214               	 ;  137 "../../clib/rf_native.c" 1
+ 215 00da 8491      		lpm r24, Z
+ 216               		
+ 217               	 ;  0 "" 2
+ 218               	/* #NOAPP */
+ 219 00dc 8887      		std Y+8,r24
+ 220 00de 2885      		ldd r18,Y+8
+ 221 00e0 8981      		ldd r24,Y+1
+ 222 00e2 882F      		mov r24,r24
+ 223 00e4 90E0      		ldi r25,0
+ 224 00e6 8050      		subi r24,lo8(-(NATIVE_CFG))
+ 225 00e8 9040      		sbci r25,hi8(-(NATIVE_CFG))
+ 226 00ea 9A87      		std Y+10,r25
+ 227 00ec 8987      		std Y+9,r24
+ 228 00ee 8985      		ldd r24,Y+9
+ 229 00f0 9A85      		ldd r25,Y+10
+ 230 00f2 FC01      		movw r30,r24
+ 231               	/* #APP */
+ 232               	 ;  136 "../../clib/rf_native.c" 1
+ 233 00f4 8491      		lpm r24, Z
+ 234               		
+ 235               	 ;  0 "" 2
+ 236               	/* #NOAPP */
+ 237 00f6 8B87      		std Y+11,r24
+ 238 00f8 8B85      		ldd r24,Y+11
+ 239 00fa 622F      		mov r22,r18
+ 240 00fc 0E94 0000 		call cc1100_writeReg
+ 241 0100 8981      		ldd r24,Y+1
+ 242 0102 8E5F      		subi r24,lo8(-(2))
+ 243 0104 8983      		std Y+1,r24
+ 244               	.L5:
+ 245 0106 8981      		ldd r24,Y+1
+ 246 0108 8C33      		cpi r24,lo8(60)
+ 247 010a 00F0      		brlo .L8
+ 248               	.L7:
+ 249 010c 1A82      		std Y+2,__zero_reg__
+ 250 010e 00C0      		rjmp .L9
+ 251               	.L12:
+ 252 0110 8D89      		ldd r24,Y+21
+ 253 0112 882F      		mov r24,r24
+ 254 0114 90E0      		ldi r25,0
+ 255 0116 AC01      		movw r20,r24
+ 256 0118 4150      		subi r20,1
+ 257 011a 5109      		sbc r21,__zero_reg__
+ 258 011c 8A81      		ldd r24,Y+2
+ 259 011e 882F      		mov r24,r24
+ 260 0120 90E0      		ldi r25,0
+ 261 0122 64E1      		ldi r22,lo8(20)
+ 262 0124 649F      		mul r22,r20
+ 263 0126 9001      		movw r18,r0
+ 264 0128 659F      		mul r22,r21
+ 265 012a 300D      		add r19,r0
+ 266 012c 1124      		clr __zero_reg__
+ 267 012e 820F      		add r24,r18
+ 268 0130 931F      		adc r25,r19
+ 269 0132 8050      		subi r24,lo8(-(MODE_CFG))
+ 270 0134 9040      		sbci r25,hi8(-(MODE_CFG))
+ 271 0136 9D87      		std Y+13,r25
+ 272 0138 8C87      		std Y+12,r24
+ 273 013a 8C85      		ldd r24,Y+12
+ 274 013c 9D85      		ldd r25,Y+13
+ 275 013e FC01      		movw r30,r24
+ 276               	/* #APP */
+ 277               	 ;  143 "../../clib/rf_native.c" 1
+ 278 0140 8491      		lpm r24, Z
+ 279               		
+ 280               	 ;  0 "" 2
+ 281               	/* #NOAPP */
+ 282 0142 8E87      		std Y+14,r24
+ 283 0144 8E85      		ldd r24,Y+14
+ 284 0146 8134      		cpi r24,lo8(65)
+ 285 0148 00F0      		brlo .L10
+ 286 014a 00C0      		rjmp .L11
+ 287               	.L10:
+ 288 014c 8D89      		ldd r24,Y+21
+ 289 014e 882F      		mov r24,r24
+ 290 0150 90E0      		ldi r25,0
+ 291 0152 AC01      		movw r20,r24
+ 292 0154 4150      		subi r20,1
+ 293 0156 5109      		sbc r21,__zero_reg__
+ 294 0158 8A81      		ldd r24,Y+2
+ 295 015a 882F      		mov r24,r24
+ 296 015c 90E0      		ldi r25,0
+ 297 015e 0196      		adiw r24,1
+ 298 0160 64E1      		ldi r22,lo8(20)
+ 299 0162 649F      		mul r22,r20
+ 300 0164 9001      		movw r18,r0
+ 301 0166 659F      		mul r22,r21
+ 302 0168 300D      		add r19,r0
+ 303 016a 1124      		clr __zero_reg__
+ 304 016c 820F      		add r24,r18
+ 305 016e 931F      		adc r25,r19
+ 306 0170 8050      		subi r24,lo8(-(MODE_CFG))
+ 307 0172 9040      		sbci r25,hi8(-(MODE_CFG))
+ 308 0174 988B      		std Y+16,r25
+ 309 0176 8F87      		std Y+15,r24
+ 310 0178 8F85      		ldd r24,Y+15
+ 311 017a 9889      		ldd r25,Y+16
+ 312 017c FC01      		movw r30,r24
+ 313               	/* #APP */
+ 314               	 ;  147 "../../clib/rf_native.c" 1
+ 315 017e 8491      		lpm r24, Z
+ 316               		
+ 317               	 ;  0 "" 2
+ 318               	/* #NOAPP */
+ 319 0180 898B      		std Y+17,r24
+ 320 0182 7989      		ldd r23,Y+17
+ 321 0184 8D89      		ldd r24,Y+21
+ 322 0186 882F      		mov r24,r24
+ 323 0188 90E0      		ldi r25,0
+ 324 018a AC01      		movw r20,r24
+ 325 018c 4150      		subi r20,1
+ 326 018e 5109      		sbc r21,__zero_reg__
+ 327 0190 8A81      		ldd r24,Y+2
+ 328 0192 882F      		mov r24,r24
+ 329 0194 90E0      		ldi r25,0
+ 330 0196 64E1      		ldi r22,lo8(20)
+ 331 0198 649F      		mul r22,r20
+ 332 019a 9001      		movw r18,r0
+ 333 019c 659F      		mul r22,r21
+ 334 019e 300D      		add r19,r0
+ 335 01a0 1124      		clr __zero_reg__
+ 336 01a2 820F      		add r24,r18
+ 337 01a4 931F      		adc r25,r19
+ 338 01a6 8050      		subi r24,lo8(-(MODE_CFG))
+ 339 01a8 9040      		sbci r25,hi8(-(MODE_CFG))
+ 340 01aa 9B8B      		std Y+19,r25
+ 341 01ac 8A8B      		std Y+18,r24
+ 342 01ae 8A89      		ldd r24,Y+18
+ 343 01b0 9B89      		ldd r25,Y+19
+ 344 01b2 FC01      		movw r30,r24
+ 345               	/* #APP */
+ 346               	 ;  146 "../../clib/rf_native.c" 1
+ 347 01b4 8491      		lpm r24, Z
+ 348               		
+ 349               	 ;  0 "" 2
+ 350               	/* #NOAPP */
+ 351 01b6 8C8B      		std Y+20,r24
+ 352 01b8 8C89      		ldd r24,Y+20
+ 353 01ba 672F      		mov r22,r23
+ 354 01bc 0E94 0000 		call cc1100_writeReg
+ 355 01c0 8A81      		ldd r24,Y+2
+ 356 01c2 8E5F      		subi r24,lo8(-(2))
+ 357 01c4 8A83      		std Y+2,r24
+ 358               	.L9:
+ 359 01c6 8A81      		ldd r24,Y+2
+ 360 01c8 8431      		cpi r24,lo8(20)
+ 361 01ca 00F4      		brsh .+2
+ 362 01cc 00C0      		rjmp .L12
+ 363               	.L11:
+ 364 01ce 83E3      		ldi r24,lo8(51)
+ 365 01d0 0E94 0000 		call ccStrobe
+ 366 01d4 8D89      		ldd r24,Y+21
+ 367 01d6 8093 0000 		sts native_on,r24
+ 368 01da 0E94 0000 		call checkFrequency
+ 369 01de 81E0      		ldi r24,lo8(1)
+ 370 01e0 0E94 0000 		call my_delay_ms
+ 371               	.L1:
+ 372               	/* epilogue start */
+ 373 01e4 6596      		adiw r28,21
+ 374 01e6 E2E0      		ldi r30, lo8(2)
+ 375 01e8 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 377               	.global	native_task
+ 379               	native_task:
+ 380 01ec A3E0      		ldi r26,lo8(3)
+ 381 01ee B0E0      		ldi r27,0
+ 382 01f0 E0E0      		ldi r30,lo8(gs(1f))
+ 383 01f2 F0E0      		ldi r31,hi8(gs(1f))
+ 384 01f4 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+ 385               	1:
+ 386               	/* prologue: function */
+ 387               	/* frame size = 3 */
+ 388               	/* stack size = 5 */
+ 389               	.L__stack_usage = 5
+ 390 01f8 8091 0000 		lds r24,native_on
+ 391 01fc 8823      		tst r24
+ 392 01fe 01F4      		brne .L14
+ 393 0200 00C0      		rjmp .L13
+ 394               	.L14:
+ 395 0202 83E2      		ldi r24,lo8(35)
+ 396 0204 90E0      		ldi r25,0
+ 397 0206 FC01      		movw r30,r24
+ 398 0208 8081      		ld r24,Z
+ 399 020a 882F      		mov r24,r24
+ 400 020c 90E0      		ldi r25,0
+ 401 020e 8470      		andi r24,4
+ 402 0210 9927      		clr r25
+ 403 0212 892B      		or r24,r25
+ 404 0214 01F0      		breq .L16
+ 405 0216 86E3      		ldi r24,lo8(54)
+ 406 0218 0E94 0000 		call ccStrobe
+ 407 021c 8BE3      		ldi r24,lo8(59)
+ 408 021e 0E94 0000 		call cc1100_readReg
+ 409 0222 8F77      		andi r24,lo8(127)
+ 410 0224 8A83      		std Y+2,r24
+ 411 0226 8A81      		ldd r24,Y+2
+ 412 0228 8823      		tst r24
+ 413 022a 01F0      		breq .L17
+ 414 022c 85E2      		ldi r24,lo8(37)
+ 415 022e 90E0      		ldi r25,0
+ 416 0230 25E2      		ldi r18,lo8(37)
+ 417 0232 30E0      		ldi r19,0
+ 418 0234 F901      		movw r30,r18
+ 419 0236 2081      		ld r18,Z
+ 420 0238 2F7E      		andi r18,lo8(-17)
+ 421 023a FC01      		movw r30,r24
+ 422 023c 2083      		st Z,r18
+ 423 023e 8FEF      		ldi r24,lo8(-1)
+ 424 0240 0E94 0000 		call cc1100_sendbyte
+ 425 0244 8EE4      		ldi r24,lo8(78)
+ 426 0246 0E94 0000 		call display_char
+ 427 024a 8091 0000 		lds r24,native_on
+ 428 024e 0E94 0000 		call display_hex2
+ 429 0252 1982      		std Y+1,__zero_reg__
+ 430 0254 00C0      		rjmp .L18
+ 431               	.L19:
+ 432 0256 80E0      		ldi r24,0
+ 433 0258 0E94 0000 		call cc1100_sendbyte
+ 434 025c 8B83      		std Y+3,r24
+ 435 025e 8B81      		ldd r24,Y+3
+ 436 0260 0E94 0000 		call display_hex2
+ 437 0264 8981      		ldd r24,Y+1
+ 438 0266 8F5F      		subi r24,lo8(-(1))
+ 439 0268 8983      		std Y+1,r24
+ 440               	.L18:
+ 441 026a 9981      		ldd r25,Y+1
+ 442 026c 8A81      		ldd r24,Y+2
+ 443 026e 9817      		cp r25,r24
+ 444 0270 00F0      		brlo .L19
+ 445 0272 85E2      		ldi r24,lo8(37)
+ 446 0274 90E0      		ldi r25,0
+ 447 0276 25E2      		ldi r18,lo8(37)
+ 448 0278 30E0      		ldi r19,0
+ 449 027a F901      		movw r30,r18
+ 450 027c 2081      		ld r18,Z
+ 451 027e 2061      		ori r18,lo8(16)
+ 452 0280 FC01      		movw r30,r24
+ 453 0282 2083      		st Z,r18
+ 454 0284 0E94 0000 		call display_nl
+ 455 0288 00C0      		rjmp .L13
+ 456               	.L17:
+ 457 028a 00C0      		rjmp .L13
+ 458               	.L16:
+ 459 028c 85E3      		ldi r24,lo8(53)
+ 460 028e 0E94 0000 		call cc1100_readReg
+ 461 0292 882F      		mov r24,r24
+ 462 0294 90E0      		ldi r25,0
+ 463 0296 8130      		cpi r24,1
+ 464 0298 9105      		cpc r25,__zero_reg__
+ 465 029a 01F0      		breq .L20
+ 466 029c 4197      		sbiw r24,17
+ 467 029e 01F4      		brne .L13
+ 468               	.L20:
+ 469 02a0 8AE3      		ldi r24,lo8(58)
+ 470 02a2 0E94 0000 		call ccStrobe
+ 471 02a6 86E3      		ldi r24,lo8(54)
+ 472 02a8 0E94 0000 		call ccStrobe
+ 473 02ac 8DE3      		ldi r24,lo8(61)
+ 474 02ae 0E94 0000 		call ccStrobe
+ 475 02b2 84E3      		ldi r24,lo8(52)
+ 476 02b4 0E94 0000 		call ccStrobe
+ 477 02b8 0000      		nop
+ 478               	.L13:
+ 479               	/* epilogue start */
+ 480 02ba 2396      		adiw r28,3
+ 481 02bc E2E0      		ldi r30, lo8(2)
+ 482 02be 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 484               	.global	native_func
+ 486               	native_func:
+ 487 02c2 A3E0      		ldi r26,lo8(3)
+ 488 02c4 B0E0      		ldi r27,0
+ 489 02c6 E0E0      		ldi r30,lo8(gs(1f))
+ 490 02c8 F0E0      		ldi r31,hi8(gs(1f))
+ 491 02ca 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+ 492               	1:
+ 493               	/* prologue: function */
+ 494               	/* frame size = 3 */
+ 495               	/* stack size = 5 */
+ 496               	.L__stack_usage = 5
+ 497 02ce 9B83      		std Y+3,r25
+ 498 02d0 8A83      		std Y+2,r24
+ 499 02d2 1982      		std Y+1,__zero_reg__
+ 500 02d4 8A81      		ldd r24,Y+2
+ 501 02d6 9B81      		ldd r25,Y+3
+ 502 02d8 0196      		adiw r24,1
+ 503 02da FC01      		movw r30,r24
+ 504 02dc 8081      		ld r24,Z
+ 505 02de 8237      		cpi r24,lo8(114)
+ 506 02e0 01F4      		brne .L22
+ 507 02e2 8A81      		ldd r24,Y+2
+ 508 02e4 9B81      		ldd r25,Y+3
+ 509 02e6 0296      		adiw r24,2
+ 510 02e8 FC01      		movw r30,r24
+ 511 02ea 8081      		ld r24,Z
+ 512 02ec 8823      		tst r24
+ 513 02ee 01F0      		breq .L23
+ 514 02f0 8A81      		ldd r24,Y+2
+ 515 02f2 9B81      		ldd r25,Y+3
+ 516 02f4 0296      		adiw r24,2
+ 517 02f6 9E01      		movw r18,r28
+ 518 02f8 2F5F      		subi r18,-1
+ 519 02fa 3F4F      		sbci r19,-1
+ 520 02fc B901      		movw r22,r18
+ 521 02fe 0E94 0000 		call fromdec
+ 522               	.L23:
+ 523 0302 8981      		ldd r24,Y+1
+ 524 0304 8823      		tst r24
+ 525 0306 01F0      		breq .L24
+ 526 0308 8981      		ldd r24,Y+1
+ 527 030a 8430      		cpi r24,lo8(4)
+ 528 030c 00F0      		brlo .L25
+ 529               	.L24:
+ 530 030e 80E0      		ldi r24,lo8(__c.2152)
+ 531 0310 90E0      		ldi r25,hi8(__c.2152)
+ 532 0312 0E94 0000 		call display_string_P
+ 533 0316 00C0      		rjmp .L21
+ 534               	.L25:
+ 535 0318 8981      		ldd r24,Y+1
+ 536 031a 0E94 0000 		call native_init
+ 537 031e 00C0      		rjmp .L27
+ 538               	.L22:
+ 539 0320 8A81      		ldd r24,Y+2
+ 540 0322 9B81      		ldd r25,Y+3
+ 541 0324 0196      		adiw r24,1
+ 542 0326 FC01      		movw r30,r24
+ 543 0328 8081      		ld r24,Z
+ 544 032a 8837      		cpi r24,lo8(120)
+ 545 032c 01F4      		brne .L27
+ 546 032e 8091 0000 		lds r24,native_on
+ 547 0332 8823      		tst r24
+ 548 0334 01F0      		breq .L28
+ 549 0336 86E3      		ldi r24,lo8(54)
+ 550 0338 0E94 0000 		call ccStrobe
+ 551               	.L28:
+ 552 033c 1092 0000 		sts native_on,__zero_reg__
+ 553               	.L27:
+ 554 0340 8091 0000 		lds r24,native_on
+ 555 0344 0E94 0000 		call display_hex2
+ 556 0348 0E94 0000 		call display_nl
+ 557               	.L21:
+ 558               	/* epilogue start */
+ 559 034c 2396      		adiw r28,3
+ 560 034e E2E0      		ldi r30, lo8(2)
+ 561 0350 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+ 563               		.section	.progmem.data,"a",@progbits
+ 566               	__c.2152:
+ 567 006a 7370 6563 		.string	"specify valid mode number\r\n"
+ 567      6966 7920 
+ 567      7661 6C69 
+ 567      6420 6D6F 
+ 567      6465 206E 
+ 568               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+ 569               	.global __do_clear_bss
+DEFINED SYMBOLS
+                            *ABS*:00000000 rf_native.c
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:6      *ABS*:00000001 __zero_reg__
+                            *COM*:00000001 packetCheckValues
+                             .bss:00000000 native_on
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:14     .progmem.data:00000000 NATIVE_CFG
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:64     .progmem.data:0000002e MODE_CFG
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:96     .text:00000000 native_init
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:379    .text:000001ec native_task
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:486    .text:000002c2 native_func
+C:\Users\Benny\AppData\Local\Temp\ccLk2vUd.s:566    .progmem.data:0000006a __c.2152
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+my_delay_us
+ccStrobe
+cc1100_writeReg
+checkFrequency
+my_delay_ms
+__epilogue_restores__
+cc1100_readReg
+cc1100_sendbyte
+display_char
+display_hex2
+display_nl
+fromdec
+display_string_P
+__do_clear_bss

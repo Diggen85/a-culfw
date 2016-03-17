@@ -1,0 +1,88 @@
+   1               		.file	"delay.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.global	my_delay_us
+  10               	my_delay_us:
+  11 0000 A4E0      		ldi r26,lo8(4)
+  12 0002 B0E0      		ldi r27,0
+  13 0004 E0E0      		ldi r30,lo8(gs(1f))
+  14 0006 F0E0      		ldi r31,hi8(gs(1f))
+  15 0008 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  16               	1:
+  17               	/* prologue: function */
+  18               	/* frame size = 4 */
+  19               	/* stack size = 6 */
+  20               	.L__stack_usage = 6
+  21 000c 9C83      		std Y+4,r25
+  22 000e 8B83      		std Y+3,r24
+  23 0010 8B81      		ldd r24,Y+3
+  24 0012 9C81      		ldd r25,Y+4
+  25 0014 880F      		lsl r24
+  26 0016 991F      		rol r25
+  27 0018 9C83      		std Y+4,r25
+  28 001a 8B83      		std Y+3,r24
+  29 001c 8B81      		ldd r24,Y+3
+  30 001e 9C81      		ldd r25,Y+4
+  31 0020 9A83      		std Y+2,r25
+  32 0022 8983      		std Y+1,r24
+  33 0024 8981      		ldd r24,Y+1
+  34 0026 9A81      		ldd r25,Y+2
+  35               	/* #APP */
+  36               	 ;  105 "d:\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h" 1
+  37 0028 0197      		1: sbiw r24,1
+  38 002a 01F4      		brne 1b
+  39               	 ;  0 "" 2
+  40               	/* #NOAPP */
+  41 002c 9A83      		std Y+2,r25
+  42 002e 8983      		std Y+1,r24
+  43               	/* epilogue start */
+  44 0030 2496      		adiw r28,4
+  45 0032 E2E0      		ldi r30, lo8(2)
+  46 0034 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+  48               	.global	my_delay_ms
+  50               	my_delay_ms:
+  51 0038 A1E0      		ldi r26,lo8(1)
+  52 003a B0E0      		ldi r27,0
+  53 003c E0E0      		ldi r30,lo8(gs(1f))
+  54 003e F0E0      		ldi r31,hi8(gs(1f))
+  55 0040 0C94 0000 		jmp __prologue_saves__+((18 - 2) * 2)
+  56               	1:
+  57               	/* prologue: function */
+  58               	/* frame size = 1 */
+  59               	/* stack size = 3 */
+  60               	.L__stack_usage = 3
+  61 0044 8983      		std Y+1,r24
+  62 0046 00C0      		rjmp .L3
+  63               	.L4:
+  64 0048 88EE      		ldi r24,lo8(-24)
+  65 004a 93E0      		ldi r25,lo8(3)
+  66 004c 0E94 0000 		call my_delay_us
+  67               	.L3:
+  68 0050 8981      		ldd r24,Y+1
+  69 0052 9FEF      		ldi r25,lo8(-1)
+  70 0054 980F      		add r25,r24
+  71 0056 9983      		std Y+1,r25
+  72 0058 8823      		tst r24
+  73 005a 01F4      		brne .L4
+  74               	/* epilogue start */
+  75 005c 2196      		adiw r28,1
+  76 005e E2E0      		ldi r30, lo8(2)
+  77 0060 0C94 0000 		jmp __epilogue_restores__ + ((18 - 2) * 2)
+  79               		.ident	"GCC: (AVR_8_bit_GNU_Toolchain_3.5.0_1662) 4.9.2"
+DEFINED SYMBOLS
+                            *ABS*:00000000 delay.c
+C:\Users\Benny\AppData\Local\Temp\ccygyIB4.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccygyIB4.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccygyIB4.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccygyIB4.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccygyIB4.s:6      *ABS*:00000001 __zero_reg__
+C:\Users\Benny\AppData\Local\Temp\ccygyIB4.s:10     .text:00000000 my_delay_us
+C:\Users\Benny\AppData\Local\Temp\ccygyIB4.s:50     .text:00000038 my_delay_ms
+
+UNDEFINED SYMBOLS
+__prologue_saves__
+__epilogue_restores__
