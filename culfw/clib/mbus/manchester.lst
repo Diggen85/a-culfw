@@ -276,15 +276,15 @@
  284               	.global __do_copy_data
 DEFINED SYMBOLS
                             *ABS*:00000000 manchester.c
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:2      *ABS*:0000003e __SP_H__
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:3      *ABS*:0000003d __SP_L__
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:4      *ABS*:0000003f __SREG__
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:5      *ABS*:00000000 __tmp_reg__
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:6      *ABS*:00000001 __zero_reg__
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:10     .data:00000000 manchEncodeTab
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:29     .data:00000010 manchDecodeTab
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:49     .text:00000000 manchEncode
-C:\Users\Benny\AppData\Local\Temp\ccQ2SOGd.s:107    .text:00000064 manchDecode
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:6      *ABS*:00000001 __zero_reg__
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:10     .data:00000000 manchEncodeTab
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:29     .data:00000010 manchDecodeTab
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:49     .text:00000000 manchEncode
+C:\Users\Benny\AppData\Local\Temp\ccKwxBCO.s:107    .text:00000064 manchDecode
 
 UNDEFINED SYMBOLS
 __prologue_saves__

@@ -66,6 +66,8 @@ extern const uint8_t mark433_pin;
 
 #define TTY_BUFSIZE             128
 
+#define HAS_STACKING
+
 
 #define RCV_BUCKETS            2      //                 RAM: 25b * bucket
 #define FULL_CC1100_PA                // PROGMEM:  108b
@@ -114,5 +116,7 @@ extern const uint8_t mark433_pin;
 #  define HAS_HMS
 #  define OFF_LACROSSE_HMS_EMU          // if you like HMS emulation for LaCrosse temp devices
 #endif
+
+
 
 #endif

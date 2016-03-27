@@ -63,6 +63,9 @@
 #ifdef HAS_RFNATIVE
 #include "rf_native.h"
 #endif
+#ifdef HAS_STACKING
+#include "stacking.h"
+#endif
 
 
 
@@ -132,6 +135,9 @@ const PROGMEM t_fntab fntab[] = {
 #ifdef HAS_RF_ROUTER
   { 'u', rf_router_func },
 #endif
+#ifdef HAS_STACKING
+  { '*', stacking_func },
+#endif
   { 'x', ccsetpa },
 
   { 0, 0 },
@@ -170,6 +176,16 @@ main(void)
 
   uart_init( UART_BAUD_SELECT_DOUBLE_SPEED(UART_BAUD_RATE,F_CPU) );
 
+ #ifdef HAS_STACKING
+  stacking_initialize();
+
+  // make sure i2c is inactive
+  DDRC  &= 0xfc;
+  PORTC &= 0xfc;
+
+#endif
+ 
+  
   fht_init();
   tx_init();
   input_handle_func = analyze_ttydata;
@@ -201,6 +217,9 @@ main(void)
 #endif
 #ifdef HAS_MORITZ
     rf_moritz_task();
+#endif
+#ifdef HAS_STACKING
+  stacking_task();
 #endif
 #ifdef HAS_RWE
     rf_rwe_task();

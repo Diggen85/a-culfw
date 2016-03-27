@@ -41,6 +41,7 @@ SRC = a644CUL.c                                            \
 		../../clib/intertechno.c                             \
 		../../clib/kopp-fc.c                                 \
 		../../clib/memory.c                                  \
+		../../clib/stacking.c                                \
 		../../clib/serial.c                                  \
 		../../clib/ttydata.c                                 \
 		../../clib/spi.c                                     \
@@ -49,6 +50,7 @@ SRC = a644CUL.c                                            \
 		../../clib/mbus/3outof6.c                            \
 		../../clib/mbus/mbus_packet.c                        \
 		../../clib/mbus/crc.c                                \
+
 
 
 OPT = s

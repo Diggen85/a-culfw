@@ -441,15 +441,15 @@
  449               	.global __do_copy_data
 DEFINED SYMBOLS
                             *ABS*:00000000 3outof6.c
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:2      *ABS*:0000003e __SP_H__
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:3      *ABS*:0000003d __SP_L__
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:4      *ABS*:0000003f __SREG__
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:5      *ABS*:00000000 __tmp_reg__
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:6      *ABS*:00000001 __zero_reg__
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:10     .data:00000000 encodeTab
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:29     .data:00000010 decodeTab
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:97     .text:00000000 encode3outof6
-C:\Users\Benny\AppData\Local\Temp\ccqfaPHj.s:246    .text:00000114 decode3outof6
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:2      *ABS*:0000003e __SP_H__
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:3      *ABS*:0000003d __SP_L__
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:4      *ABS*:0000003f __SREG__
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:5      *ABS*:00000000 __tmp_reg__
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:6      *ABS*:00000001 __zero_reg__
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:10     .data:00000000 encodeTab
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:29     .data:00000010 decodeTab
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:97     .text:00000000 encode3outof6
+C:\Users\Benny\AppData\Local\Temp\cc2VRt4Y.s:246    .text:00000114 decode3outof6
 
 UNDEFINED SYMBOLS
 __prologue_saves__
