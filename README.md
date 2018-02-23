@@ -5,7 +5,7 @@ SSCUL - Goal is to implement Software Serial Stacking for the nanoCUL - Works bu
 
 a644p - Works on an Atmel AVR 644p - with SCC support
 
-I2CCUL - Allow communication over I2C as Slave instead UART - WIP
+I2CCUL - Integrated in https://github.com/heliflieger/a-culfw
 
 # Alternative culfw for cul devices
 ___
