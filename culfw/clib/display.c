@@ -22,7 +22,7 @@
 #ifdef HAS_ETHERNET
 #include "tcplink.h"                    // for tcp_putchar
 #endif
-#ifdef HAS_W5100
+#ifdef HAS_WIZNET
 #include "ethernet.h"                   // for NET_Tx_Buffer
 #endif
 #ifdef HAS_DOGM
@@ -88,7 +88,7 @@ display_char(char data)
     tcp_putchar( data );
 #endif
 
-#ifdef HAS_W5100
+#ifdef HAS_WIZNET
   if(display_channel & DISPLAY_TCP)
     rb_put(&NET_Tx_Buffer, data);
 #endif
@@ -113,7 +113,7 @@ display_char(char data)
   }
 #endif
 
-#ifdef HAS_UART
+#if defined(HAS_UART) || defined(HAS_I2CSLAVE)
 #ifdef ARM
   if(!USB_IsConnected && (display_channel & DISPLAY_USB)) {
 #else

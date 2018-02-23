@@ -38,7 +38,8 @@
 #include "hal_gpio.h"
 #include "usbd_cdc_if.h"
 #include "usb_device.h"
-#ifdef HAS_W5100
+#include "utility/dbgu.h"
+#ifdef HAS_WIZNET
 #include "ethernet.h"
 #endif
 
@@ -49,9 +50,6 @@ UART_HandleTypeDef huart3;
 static uint8_t inbyte1;
 static uint8_t inbyte2;
 static uint8_t inbyte3;
-
-static uint8_t DBGU_RxByte;
-static uint8_t DBGU_RxReady;
 
 /* USART1 init function */
 
@@ -223,43 +221,19 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
   }
 } 
 
-int fputc(int ch, FILE *f) {
-  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
-
-  return ch;
-}
-
-signed int fputs(const char *pStr, FILE *pStream)
+__weak void UART_Tx_Callback(void)
 {
-    signed int num = 0;
-
-    while (*pStr != 0) {
-
-        if (fputc(*pStr, pStream) == -1) {
-
-            return -1;
-        }
-        num++;
-        pStr++;
-    }
-
-    return num;
+  /* NOTE : This function Should not be modified, when the callback is needed,
+            the CDCDSerialDriver_Receive_Callback could be implemented in the user file
+   */
 }
 
-void DBGU_init(void) {
-  MX_USART1_UART_Init();
+__weak void UART_Rx_Callback(uint8_t data)
+{
+  /* NOTE : This function Should not be modified, when the callback is needed,
+            the CDCDSerialDriver_Receive_Callback could be implemented in the user file
+   */
 }
-
-unsigned int DBGU_IsRxReady() {
-    return DBGU_RxReady;
-}
-
-
-unsigned char DBGU_GetChar(void) {
-  DBGU_RxReady = 0;
-  return DBGU_RxByte;
-}
-
 
 __weak void UART2_Rx_Callback(uint8_t data)
 {
@@ -279,8 +253,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
 
   if(UartHandle->Instance==USART1) {
+#ifdef HAS_UART
+    UART_Rx_Callback(inbyte1);
+#else
     DBGU_RxByte = inbyte1;
     DBGU_RxReady = 1;
+#endif
     HAL_UART_Receive_IT(&huart1, &inbyte1, 1);
 
   } else if(UartHandle->Instance==USART2) {
@@ -301,16 +279,18 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
   if(UartHandle->Instance==USART1) {
-
+#ifdef HAS_UART
+    UART_Tx_Callback();
+#endif
   } else if(UartHandle->Instance==USART2) {
     CDC_Receive_next(CDC1);
-#ifdef HAS_W5100
+#ifdef HAS_WIZNET
     NET_Receive_next(NET1);
 #endif
 
   } else if(UartHandle->Instance==USART3) {
     CDC_Receive_next(CDC2);
-#ifdef HAS_W5100
+#ifdef HAS_WIZNET
     NET_Receive_next(NET2);
 #endif
 
@@ -329,6 +309,9 @@ void HAL_UART_Set_Baudrate(uint8_t UART_num, uint32_t baudrate) {
     break;
   case 1:
     UartHandle = &huart3;
+    break;
+  case UART_NUM:
+    UartHandle = &huart1;
     break;
   default:
     return;
@@ -357,8 +340,51 @@ void HAL_UART_Write(uint8_t UART_num, uint8_t* Buf, uint16_t Len) {
   case 1:
     HAL_UART_Transmit_IT(&huart3, Buf, Len);
     break;
+  case UART_NUM:
+    HAL_UART_Transmit_IT(&huart1, Buf, Len);
+    break;
   }
   return;
+}
+
+void HAL_UART_init(uint8_t UART_num) {
+  switch(UART_num) {
+  case 0:
+    MX_USART2_UART_Init();
+    break;
+  case 1:
+    MX_USART3_UART_Init();
+    break;
+  case UART_NUM:
+    MX_USART1_UART_Init();
+    break;
+  }
+  return;
+}
+
+uint8_t HAL_UART_TX_is_idle(uint8_t UART_num) {
+  UART_HandleTypeDef *UartHandle;
+
+
+  switch(UART_num) {
+  case 0:
+    UartHandle = &huart2;
+    break;
+  case 1:
+    UartHandle = &huart3;
+    break;
+  case UART_NUM:
+    UartHandle = &huart1;
+    break;
+  default:
+    return 0;
+  }
+
+   if((UartHandle->State == HAL_UART_STATE_READY) || (UartHandle->State == HAL_UART_STATE_BUSY_RX)) {
+     return 1;
+   }
+
+  return 0;
 }
 
 /**
